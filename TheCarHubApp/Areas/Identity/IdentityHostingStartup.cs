@@ -21,6 +21,7 @@ namespace TheCarHubApp.Areas.Identity
                         context.Configuration.GetConnectionString("TheCarHubAppContextConnection")));
 
                 services.AddDefaultIdentity<TheCarHubAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<TheCarHubAppContext>();
             });
         }
