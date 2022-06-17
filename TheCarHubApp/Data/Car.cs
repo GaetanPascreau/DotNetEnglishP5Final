@@ -13,6 +13,8 @@ namespace TheCarHubApp.Data
         public int Id { get; set; }
         [ForeignKey("FK_CarMake")]
         public int? CarMakeId { get; set; }
+        [ForeignKey("FK_CarModel")]
+        public int? CarModelId { get; set; }
         public string VIN { get; set; }
         public int Year { get; set; }
         public string Trim { get; set; }
@@ -26,5 +28,7 @@ namespace TheCarHubApp.Data
         public string Description { get; set; }
         public int Milleage { get; set; }
         public string Color { get; set; }
+        public string MakeName { get; set; }
+        public string ModelName { get; set; }
     }
 }

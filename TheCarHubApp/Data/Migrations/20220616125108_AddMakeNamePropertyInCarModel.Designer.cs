@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TheCarHubApp.Data;
 
 namespace TheCarHubApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220616125108_AddMakeNamePropertyInCarModel")]
+    partial class AddMakeNamePropertyInCarModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -229,9 +231,6 @@ namespace TheCarHubApp.Data.Migrations
                     b.Property<int?>("CarMakeId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CarModelId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
@@ -241,14 +240,8 @@ namespace TheCarHubApp.Data.Migrations
                     b.Property<DateTime>("LotDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("MakeName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Milleage")
                         .HasColumnType("int");
-
-                    b.Property<string>("ModelName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("datetime2");
@@ -325,11 +318,9 @@ namespace TheCarHubApp.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("MakeName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ModelName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

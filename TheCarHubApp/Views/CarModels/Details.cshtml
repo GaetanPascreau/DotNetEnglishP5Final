@@ -7,13 +7,21 @@
 <h1>Details</h1>
 
 <div>
-    <h4>CarModel</h4>
+    <h4>Car Model</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModelName)
+        <dt class="col-sm-2">
+            @*@Html.DisplayNameFor(model => model.MakeName)*@
+            Make
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MakeName)
+        </dd>
+        <dt class="col-sm-2">
+            @*@Html.DisplayNameFor(model => model.ModelName)*@
+            Model
+        </dt>
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ModelName)
         </dd>
     </dl>
