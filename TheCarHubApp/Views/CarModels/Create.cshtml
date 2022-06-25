@@ -4,7 +4,7 @@
 }
 
 <h1>Create</h1>
-<h4>CarModel</h4>
+<h4>Car Model</h4>
 <hr />
 
 <div class="row">
@@ -17,9 +17,6 @@
                 <select asp-for="CarMakeId" asp-items="@(new SelectList(ViewBag.ListofCarMake, "Id", "MakeName"))">
                 </select>
             </div>
-            @*<div class="someclass" style="display: @{ ViewBag.SelectedMake == null ? @:"Please select a car Make" : @:"HideMe"};">
-                <p>@ViewBag.SelectedMake</p>
-            </div>*@
             <div>
                 @if(ViewBag.SelectedMake == null)
                 {

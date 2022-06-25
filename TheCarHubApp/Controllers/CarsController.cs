@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TheCarHubApp.Data;
+
 
 namespace TheCarHubApp.Controllers
 {
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         public CarsController(ApplicationDbContext context)
         {
             _context = context;
@@ -23,7 +24,7 @@ namespace TheCarHubApp.Controllers
         public async Task<IActionResult> Index()
         {
             var models = await _context.Cars.ToListAsync();
-            // Get the Make Name and the Model ANme for each car on the list by using the foreign keys carMakeId and carModelId
+            // Get the Make Name and the Model Name for each car on the list by using the foreign keys carMakeId and carModelId
             for (int i = 0; i < models.Count; i++)
             {
                 models[i].MakeName = _context.CarMakes.Where(x => x.Id == models[i].CarMakeId).Select(y => y.MakeName).FirstOrDefault();
@@ -55,31 +56,31 @@ namespace TheCarHubApp.Controllers
             return View(car);
         }
 
-        //[Authorize(Roles = "Administrator")]
-        //// GET: Cars/Create   ORIGINAL
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
 
         [Authorize(Roles = "Administrator")]
         // GET: Cars/Create  MODIFIED with addition of a dropdown lists for CarMakes and CarModels
         public IActionResult Create()
         {
+            // Populate the 1st Select options, for Car Makes
             List<CarMake> carMakeList = new List<CarMake>();
-            List<CarModel> carModelList = new List<CarModel>();
-
-            // Fill the lists with all items from the CarMakes and CarModels tables
+            // Fill the list with all items from the CarMakes table
             carMakeList = (from c in _context.CarMakes select c).ToList();
-            carModelList = (from c in _context.CarModels select c).ToList();
-
-            // At the top of the lists, add the text to display on the select box
-            carMakeList.Insert(0, new CarMake { Id = 0, MakeName = "-- Select a car make --" });
-            carModelList.Insert(0, new CarModel { Id = 0, ModelName = "-- Select a car model --" });
-
+            // At the top of the list, add the text to display on the select box
+            carMakeList.Insert(0, new CarMake { Id = 0, MakeName = "-- Select a car make --" });     
             // Add the list to the ViewBag
             ViewBag.ListofCarMake = carMakeList;
-            ViewBag.ListofCarModel = carModelList;
+          
+            // Create a limited list of year (from 1990 to the current year) to choose from
+            int CurrentYear = int.Parse(DateTime.Now.Year.ToString());
+            int FirstYear = 1990;
+            var YearList = new List<SelectListItem>();
+            YearList.Insert(0, new SelectListItem { Text = "-- Select a Year --" });
+
+            for(var i = FirstYear; i<= CurrentYear; i++)
+            {
+                YearList.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
+            }
+            ViewBag.YearList = YearList;
 
             return View();
         }
@@ -144,7 +145,7 @@ namespace TheCarHubApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color")] Car car)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName")] Car car)
         {
             if (id != car.Id)
             {
@@ -215,6 +216,16 @@ namespace TheCarHubApp.Controllers
         private bool CarExists(int id)
         {
             return _context.Cars.Any(e => e.Id == id);
+        }
+
+        // Method to get the list of Car Model associated with a selected Make
+        [HttpGet]
+        public IActionResult FetchCarModel(int Id)
+        {
+            var data = _context.CarModels
+                .Where(c => c.CarMakeId == Id).ToList()
+                ;
+            return Json(new {ModelList =  data});
         }
     }
 }

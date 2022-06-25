@@ -3,7 +3,11 @@
 @{
     ViewData["Title"] = "Create";
 }
+<script type="text/javascript"
+        src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.
+min.js">
 
+</script>
 <h1>Create</h1>
 
 <h4>Car</h4>
@@ -14,13 +18,17 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CarMakeId" class="control-label">Make</label>
-                <select asp-for="CarMakeId" asp-items="@(new SelectList(ViewBag.ListofCarMake, "Id", "MakeName"))">
+                <select id="CarMakeId" asp-for="CarMakeId" asp-items="@(new SelectList(ViewBag.ListofCarMake, "Id", "MakeName"))">
                 </select>
+                <span asp-validation-for="CarMakeId" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="CarModelId" class="control-label">Model</label>
-                <select asp-for="CarModelId" asp-items="@(new SelectList(ViewBag.ListofCarModel, "Id", "ModelName"))">
+                <select id="CarModelId" asp-for="CarModelId">
                 </select>
+                <span asp-validation-for="CarModelId" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="VIN" class="control-label"></label>
@@ -29,7 +37,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="Year" class="control-label"></label>
-                <input asp-for="Year" class="form-control" />
+                @*@Html.DropDownList("YearList", new SelectList(ViewBag.YearList, "Value", "Text"), "--Select a Year--")*@
+                <select id="Year" asp-for="Year" asp-items="@(new SelectList(ViewBag.YearList, "Value", "Text"))">
+                </select>
                 <span asp-validation-for="Year" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -98,6 +108,25 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+
+<script type="text/javascript">
+    var carModelUrl = '@Url.Action("FetchCarModel")';
+    var carModels = $('#CarModelId');
+
+    $('#CarMakeId').change(function () {
+        var CarMakevalue = parseInt($('#CarMakeId').val());
+        carModels.empty();
+        $.getJSON(carModelUrl, { Id: CarMakevalue }, function (data) {
+            if (!data) {
+                return;
+            }
+            carModels.append($('<option></option>)').val('').text('--Select a Car Model'));
+            $.each(data.modelList, function (index, item) {
+                carModels.append($('<option></option>').val(item.id).text(item.modelName));
+            });
+        });
+    });
+</script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

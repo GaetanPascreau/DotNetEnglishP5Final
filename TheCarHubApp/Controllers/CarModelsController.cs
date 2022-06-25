@@ -53,12 +53,6 @@ namespace TheCarHubApp.Controllers
             return View(carModel);
         }
 
-        //// GET: CarModels/Create ORIGINAL
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
         // GET: CarModels/Create MODIFIED with addition of a dropdown list for CarMakes
         public IActionResult Create()
         {
@@ -114,13 +108,7 @@ namespace TheCarHubApp.Controllers
                 return NotFound();
             }
 
-            List<CarMake> carMakeList = new List<CarMake>();
-            // Fill the list with all items from the CarMakes table
-            carMakeList = (from c in _context.CarMakes select c).ToList();
-            // At the top of the list, add the text to display on the select box
-            carMakeList.Insert(0, new CarMake { Id = 0, MakeName = "-- Select a car make --" });
-            // Add the list to the ViewBag
-            ViewBag.ListofCarMake = carMakeList;
+            //carModel.MakeName = _context.CarMakes.Where(x => x.Id == carModel.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
 
             return View(carModel);
         }
@@ -143,7 +131,6 @@ namespace TheCarHubApp.Controllers
                 {
                     carModel.MakeName = _context.CarMakes.Where(x => x.Id == carModel.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
                     _context.Update(carModel);
-
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

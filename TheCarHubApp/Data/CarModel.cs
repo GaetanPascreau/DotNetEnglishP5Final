@@ -14,7 +14,9 @@ namespace TheCarHubApp.Data
         [ForeignKey("FK_CarMake")]
         public int? CarMakeId { get; set; }
         [Required]
+        [Display(Name ="Model")]
         public string ModelName { get; set; }
+        [Display(Name = "Make")]
         public string MakeName { get; set; }
     }
 }
