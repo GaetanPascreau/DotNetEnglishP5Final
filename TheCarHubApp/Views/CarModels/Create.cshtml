@@ -14,17 +14,18 @@
 
             <div class="form-group">
                 <label asp-for="CarMakeId" class="control-label">Make</label>
-                <select asp-for="CarMakeId" asp-items="@(new SelectList(ViewBag.ListofCarMake, "Id", "MakeName"))">
+                <select id="CarMakeId" asp-for="CarMakeId" asp-items="@(new SelectList(ViewBag.ListofCarMake, "Id", "MakeName"))">
                 </select>
+                <span asp-validation-for="CarMakeId" class="text-danger"></span>
             </div>
-            <div>
+            @*<div>
                 @if(ViewBag.SelectedMake == null)
                 {
                     <div class="form-group alert-danger">
                        <p>Please select a car make</p>
                     </div>
                 }
-            </div>
+            </div>*@
        
             <div class="form-group">
                 <label asp-for="ModelName" class="control-label"> Model Name</label>
