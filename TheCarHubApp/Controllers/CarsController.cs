@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TheCarHubApp.Data;
-
+using TheCarHubApp.ViewModels;
 
 namespace TheCarHubApp.Controllers
 {
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public CarsController(ApplicationDbContext context)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+
+        public CarsController(ApplicationDbContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Cars
@@ -91,19 +97,66 @@ namespace TheCarHubApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName")] Car car)
+        public async Task<IActionResult> Create([Bind("CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName,Photos")] CarCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                car.MakeName = _context.CarMakes.Where(x => x.Id == car.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
-                car.ModelName = _context.CarModels.Where(x => x.Id == car.CarModelId).Select(y => y.ModelName).FirstOrDefault();
+                string uniqueFileName = null;
+                if(model.Photos != null && model.Photos.Count >0)
+                {
+                    foreach(IFormFile photo in model.Photos)
+                    {
+                        // Add a path to the upload folder (= Images folder)
+                        string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "Images");
+                        // Add a unique identifier at the begining of the file Name
+                        uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
+                        //Create the path for the file 
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        // Upload the file into the Images Folder
+                        photo.CopyTo(new FileStream(filePath, FileMode.Create));
+                    }
+                    
+                }
 
+                model.MakeName = _context.CarMakes.Where(x => x.Id == model.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
+                model.ModelName = _context.CarModels.Where(x => x.Id == model.CarModelId).Select(y => y.ModelName).FirstOrDefault();
 
-                _context.Add(car);
+                Car newcar = new Car
+                {
+                    CarMakeId = model.CarMakeId,
+                    CarModelId = model.CarModelId,
+                    VIN = model.VIN,
+                    Year = model.Year,
+                    Trim = model.Trim,
+                    PurchaseDate = model.PurchaseDate,
+                    PurchasePrice = model.PurchasePrice,
+                    Repairs = model.Repairs,
+                    RepairCost = model.RepairCost,
+                    LotDate = model.LotDate,
+                    SellingPrice = model.SellingPrice,
+                    SaleDate = model.SaleDate,
+                    Description = model.Description,
+                    Milleage = model.Milleage,
+                    Color = model.Color,
+                    MakeName = model.MakeName,
+                    ModelName = model.ModelName,
+                    PhotoPath = uniqueFileName
+                };
+ 
+                _context.Add(newcar);
+
+                //CarPhoto newCarPhoto = new CarPhoto
+                //{
+                //    // create a new CarPhoto and save it into the database
+                //    PhotoTitle = uniqueFileName
+                //};
+                //_context.Add(newCarPhoto);
+
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction("details", new { id = newcar.Id });
             }
-            return View(car);
+            return View(model);
         }
 
         [Authorize(Roles = "Administrator")]
@@ -136,6 +189,29 @@ namespace TheCarHubApp.Controllers
             ViewBag.ListofCarMake = carMakeList;
             ViewBag.ListofCarModel = carModelList;
 
+            //CarCreateViewModel carCreateViewModel = new CarCreateViewModel
+            //{
+            //    CarMakeId = car.CarMakeId,
+            //    CarModelId = car.CarModelId,
+            //    VIN = car.VIN,
+            //    Year = car.Year,
+            //    Trim = car.Trim,
+            //    PurchaseDate = car.PurchaseDate,
+            //    PurchasePrice = car.PurchasePrice,
+            //    Repairs = car.Repairs,
+            //    RepairCost = car.RepairCost,
+            //    LotDate = car.LotDate,
+            //    SellingPrice = car.SellingPrice,
+            //    SaleDate = car.SaleDate,
+            //    Description = car.Description,
+            //    Milleage = car.Milleage,
+            //    Color = car.Color,
+            //    MakeName = car.MakeName,
+            //    ModelName = car.ModelName,
+            //    //Photo = new FileStream(car.PhotoPath, FileMode.Append)
+            //    Photo = _context.CarPhotos.Where(x => x.PhotoFile.FileName == car.PhotoPath).Select(y => y.PhotoFile).FirstOrDefault()
+            //};
+
             return View(car);
         }
 
@@ -145,7 +221,7 @@ namespace TheCarHubApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName")] Car car)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName,PhotoPath")] Car car)
         {
             if (id != car.Id)
             {
@@ -211,6 +287,20 @@ namespace TheCarHubApp.Controllers
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }                                                                                              
+
+        // Method to delete a car photo from the Edit Page
+        [Authorize(Roles = "Administrator")]
+        // POST: Cars/Edit/5
+        [HttpPost, ActionName("DeletePhoto")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePhoto(int id)
+        {
+            var car = await _context.Cars.FindAsync(id);
+            car.PhotoPath = null;
+            _context.Cars.Update(car);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Edit", new { id });
         }
 
         private bool CarExists(int id)
@@ -227,5 +317,7 @@ namespace TheCarHubApp.Controllers
                 ;
             return Json(new {ModelList =  data});
         }
+
+
     }
 }

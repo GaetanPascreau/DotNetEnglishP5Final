@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +16,12 @@ namespace TheCarHubApp.Controllers
     public class CarPhotoesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public CarPhotoesController(ApplicationDbContext context)
+        public CarPhotoesController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            this._hostEnvironment = hostEnvironment;
         }
 
         // GET: CarPhotoes
@@ -55,10 +59,22 @@ namespace TheCarHubApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CarDetailId,PhotoTitle,PhotoFilePath")] CarPhoto carPhoto)
+        public async Task<IActionResult> Create([Bind("Id,CarDetailId,PhotoTitle,PhotoFile")] CarPhoto carPhoto)
         {
             if (ModelState.IsValid)
             {
+                // Save photo to wwwroot/Image folder
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(carPhoto.PhotoFile.FileName);
+                string extension = Path.GetExtension(carPhoto.PhotoFile.FileName);
+                carPhoto.PhotoFilePath = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                string path = Path.Combine(wwwRootPath + "/Image/", fileName);
+                using (var fileStream = new  FileStream(path, FileMode.Create))
+                {
+                    await carPhoto.PhotoFile.CopyToAsync(fileStream);
+                }
+
+                // Insert record into database
                 _context.Add(carPhoto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

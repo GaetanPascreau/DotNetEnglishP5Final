@@ -1,26 +1,25 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TheCarHubApp.Data
+namespace TheCarHubApp.ViewModels
 {
-    public class Car
+    public class CarCreateViewModel
     {
-        [Key]
-        public int Id { get; set; }
         [Required(ErrorMessage = "The Make is required")]
         [ForeignKey("FK_CarMake")]
         public int? CarMakeId { get; set; }
-        [Required(ErrorMessage ="The Model is required")]
+        [Required(ErrorMessage = "The Model is required")]
         [ForeignKey("FK_CarModel")]
         public int? CarModelId { get; set; }
         [Required(ErrorMessage = "The VIN is required")]
         public string VIN { get; set; }
         [Required(ErrorMessage = "The Year is required")]
-        [Range(1990,2022)]
+        [Range(1990, 2022)]
         public int Year { get; set; }
         [Required(ErrorMessage = "The Trim is required")]
         public string Trim { get; set; }
@@ -43,7 +42,7 @@ namespace TheCarHubApp.Data
         [Display(Name = "Selling Price")]
         public double SellingPrice { get; set; }
         [DataType(DataType.Date)]
-        [Display(Name ="Sale Date")]
+        [Display(Name = "Sale Date")]
         public DateTime? SaleDate { get; set; }
         public string Description { get; set; }
         [Required(ErrorMessage = "The Milleage is required")]
@@ -54,6 +53,6 @@ namespace TheCarHubApp.Data
         public string MakeName { get; set; }
         [Display(Name = "Model")]
         public string ModelName { get; set; }
-        public string PhotoPath { get; set; }
+        public List<IFormFile> Photos { get; set; }
     }
 }

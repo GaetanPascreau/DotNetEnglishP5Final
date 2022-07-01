@@ -1,7 +1,9 @@
-﻿@model TheCarHubApp.Data.Car
+﻿@*@model TheCarHubApp.Data.Car*@
+@model TheCarHubApp.Data.Car
 
 @{
     ViewData["Title"] = "Details";
+    var photoPath = "~/Images/" + (Model.PhotoPath ?? "noimage.jpg");
 }
 
 <h1>Details</h1>
@@ -10,18 +12,6 @@
     <h4>Car</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.VIN)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.VIN)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Year)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Year)
-        </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.MakeName)
         </dt>
@@ -33,6 +23,18 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ModelName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.VIN)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.VIN)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Year)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Trim)
@@ -101,6 +103,9 @@
             @Html.DisplayFor(model => model.Color)
         </dd>
     </dl>
+    <div class="card-body text-center">
+        <img class="card-img-top imageThumbnail" src="@photoPath" alt="photo of the car" asp-append-version="true" />
+    </div>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
