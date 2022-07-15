@@ -3,21 +3,38 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TheCarHubApp.Data;
 
 namespace TheCarHubApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220711180450_addingCarPhotoListInCar")]
+    partial class addingCarPhotoListInCar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("CarCarPhoto", b =>
+                {
+                    b.Property<int>("CarPhotoesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CarsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CarPhotoesId", "CarsId");
+
+                    b.HasIndex("CarsId");
+
+                    b.ToTable("CarCarPhoto");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -234,9 +251,6 @@ namespace TheCarHubApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int?>("CarPhotoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Color")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -289,8 +303,6 @@ namespace TheCarHubApp.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CarMakeId");
-
-                    b.HasIndex("CarPhotoId");
 
                     b.ToTable("Cars");
                 });
@@ -355,6 +367,21 @@ namespace TheCarHubApp.Data.Migrations
                     b.ToTable("CarPhotos");
                 });
 
+            modelBuilder.Entity("CarCarPhoto", b =>
+                {
+                    b.HasOne("TheCarHubApp.Data.CarPhoto", null)
+                        .WithMany()
+                        .HasForeignKey("CarPhotoesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TheCarHubApp.Data.Car", null)
+                        .WithMany()
+                        .HasForeignKey("CarsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -413,10 +440,6 @@ namespace TheCarHubApp.Data.Migrations
                         .HasForeignKey("CarMakeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("TheCarHubApp.Data.CarPhoto", null)
-                        .WithMany("Cars")
-                        .HasForeignKey("CarPhotoId");
                 });
 
             modelBuilder.Entity("TheCarHubApp.Data.CarModel", b =>
@@ -430,11 +453,6 @@ namespace TheCarHubApp.Data.Migrations
                 {
                     b.Navigation("CarModels");
 
-                    b.Navigation("Cars");
-                });
-
-            modelBuilder.Entity("TheCarHubApp.Data.CarPhoto", b =>
-                {
                     b.Navigation("Cars");
                 });
 #pragma warning restore 612, 618

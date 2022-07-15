@@ -361,3 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Ignore the Images folder
+wwwroot/Images/
+
+# Ignore all Images files of type jpg, jpeg or dng
+*.jpg
+*.jpeg
+*.png

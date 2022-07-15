@@ -1,23 +1,22 @@
-﻿@model TheCarHubApp.Data.Car
-@*@model TheCarHubApp.ViewModels.CarCreateViewModel*@
+﻿
+@model TheCarHubApp.Data.Car
 
 @{
     ViewData["Title"] = "Edit";
-    var photoPath = "~/Images/" + (Model.PhotoPath ?? "noimage.jpg");
-    //var photoPath = "~/Images/" + (Model.Photo.FileName ?? "noimage.jpg");
+    var photoSource = "";
+
 }
 
-<h1>Edit</h1>
+<h1>Car Edition</h1>
 
-<h4>Car</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form enctype="multipart/form-data" asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="CarMakeId" />
-            <input type="hidden" asp-for="CarModelId" />
+            <input type="hidden" asp-for="CarMakeId" id="CarMakeId" />
+            <input type="hidden" asp-for="CarModelId" id="CarModelId" />
 
             <dl class="row">
                 <dt class="col-sm-2">
@@ -40,14 +39,34 @@
                 <span asp-validation-for="VIN" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Year" class="control-label"></label>
-                <input asp-for="Year" class="form-control" />
-                <span asp-validation-for="Year" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Trim" class="control-label"></label>
                 <input asp-for="Trim" class="form-control" />
                 <span asp-validation-for="Trim" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Year" class="control-label"></label>
+                <select id="Year" asp-for="Year" asp-items="@(new SelectList(ViewBag.YearList, "Value", "Text"))">
+                </select>
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Milleage" class="control-label"></label>
+                <input asp-for="Milleage" class="form-control" />
+                <span asp-validation-for="Milleage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Color" class="control-label"></label>
+                <input asp-for="Color" class="form-control" />
+                <span asp-validation-for="Color" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Setup Margin ($500 by default)</label>
+                <input class="form-control" id="Margin" placeholder="500" />
             </div>
             <div class="form-group">
                 <label asp-for="PurchaseDate" class="control-label"></label>
@@ -84,31 +103,32 @@
                 <input asp-for="SaleDate" class="form-control" />
                 <span asp-validation-for="SaleDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Milleage" class="control-label"></label>
-                <input asp-for="Milleage" class="form-control" />
-                <span asp-validation-for="Milleage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Color" class="control-label"></label>
-                <input asp-for="Color" class="form-control" />
-                <span asp-validation-for="Color" class="text-danger"></span>
+
+            <div class="gallery" style="width: 300%; display: flex; flex-wrap: wrap; align-content: space-around; align-items: flex-end; gap: 10px 30px;">
+                @if (ViewBag.Photoes != null && ViewBag.Photoes.Count > 0)
+                {
+                    @foreach (var photo in ViewBag.Photoes)
+                    {
+                        photoSource = "~/Images/" + photo.PhotoName;
+
+                        <div style="flex: 25%;">
+                            <div><img src="@photoSource " alt="photo of the car" asp-append-version="true" /></div>
+                            <div><button onclick="deletephoto(@photo.Id)" type="button" class="btn btn-danger">Delete Photo</button></div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <img class="card-img-top imageThumbnail" src="~/Images/noimage.jpg" alt="photo of the car" asp-append-version="true" />
+                }
             </div>
 
-            <div class="card-body text-center">
-                <img class="card-img-top imageThumbnail" src="@photoPath" alt="photo of the car" asp-append-version="true" />
-                <button asp-action="DeletePhoto">Delete Photo</button>
-            </div>
+            @*Upload new photoes to that car and save them in the Images folder and in the CarPhoto Table)*@
             <div class="form-group">
-                <label asp-for="PhotoPath" class="control-label"></label>
+                <label asp-for="CarPhotoes" class="control-label"></label>
                 <div class="custom-file">
-                    <input asp-for="PhotoPath" class="form-control custom-file-input" />
-                    <label class="custom-file-label">Choose File...</label>
+                    <input multiple asp-for="CarPhotoes" class="form-control custom-file-input" />
+                    <label class="custom-file-label">Choose new Photoes ...</label>
                 </div>
             </div>
 
@@ -123,15 +143,63 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+
 <script>
+    function deletephoto(id) {
+        fetch('/cars/DeletePhoto/' + id, {
+            method: 'Post',
+            headers: {
+                'Content-type': 'application/json'
+            }
+
+        }).then(res => console.log(res)).catch(err => console.log(err))
+    }
+
     $(document).ready(function () {
         $('.custom-file-input').on("change", function () {
-            var fileName = $(this).val().split("\\").pop();
-            $(this).next('.custom-file-label').html(fileName);
+            var fileLabel = $(this).next('.custom-file-label');
+            var files = $(this)[0].files;
+            if (files.length > 1) {
+                fileLabel.html(files.length + ' files selected');
+            }
+            else if (files.length == 1) {
+                fileLabel.html(files[0].name);
+            }
         });
     });
+
+    //automatic calculation of Selling Price
+    $(document).ready(function () {
+        var placeholder = document.getElementById("Margin").getAttribute("placeholder");
+        console.log(placeholder);
+        console.log($("#Margin").val());
+        if ($("#Margin").val() == "") {
+            $("#PurchasePrice, #RepairCost").on("input", calc)
+            console.log("margin input field wasn't filled")
+        }
+        else {
+            $("#Margin, #PurchasePrice, #RepairCost").on("input", calc)
+        }
+        $("#calc").on("click", calc);
+
+        function calc() {
+            var purchasePrice = $("#PurchasePrice").val();
+            var repairCost = $("#RepairCost").val();
+            var margin = $("#Margin").val() != "" ? $("#Margin").val() : 500;
+            console.log(margin);
+            $('#SellingPrice').val(parseInt(purchasePrice) + parseInt(repairCost) + parseInt(margin));
+        }
+    });
+
+    //setTimeout("location.reload(true);", 1000);
 </script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+
+
+
+
+

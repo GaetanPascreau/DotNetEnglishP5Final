@@ -17,7 +17,6 @@ namespace TheCarHubApp.Data
         public DbSet<Car> Cars { get; set; }
         public DbSet<CarMake> CarMakes { get; set; }
         public DbSet<CarModel> CarModels { get; set; }
-        public DbSet<CarDetail> CarDetails { get; set; }
         public DbSet<CarPhoto> CarPhotos { get; set; }
     }
 }

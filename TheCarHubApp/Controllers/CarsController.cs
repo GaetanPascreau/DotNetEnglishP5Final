@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using javax.jws;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -50,9 +51,9 @@ namespace TheCarHubApp.Controllers
             var car = await _context.Cars
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            car.MakeName = _context.CarMakes.Where(x => x.Id == car.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
-            car.ModelName = _context.CarModels.Where(x => x.Id == car.CarModelId).Select(y => y.ModelName).FirstOrDefault();
-
+            // Get all the photos associated with the car of the given id into a list
+            var photos = await _context.CarPhotos.Where(p => p.CarId == id).ToListAsync();
+            ViewBag.Photoes = photos;
 
             if (car == null)
             {
@@ -72,21 +73,11 @@ namespace TheCarHubApp.Controllers
             // Fill the list with all items from the CarMakes table
             carMakeList = (from c in _context.CarMakes select c).ToList();
             // At the top of the list, add the text to display on the select box
-            carMakeList.Insert(0, new CarMake { Id = 0, MakeName = "-- Select a car make --" });     
+            carMakeList.Insert(0, new CarMake { Id = 0, MakeName = "-- Select a car make --" });
             // Add the list to the ViewBag
             ViewBag.ListofCarMake = carMakeList;
-          
-            // Create a limited list of year (from 1990 to the current year) to choose from
-            int CurrentYear = int.Parse(DateTime.Now.Year.ToString());
-            int FirstYear = 1990;
-            var YearList = new List<SelectListItem>();
-            YearList.Insert(0, new SelectListItem { Text = "-- Select a Year --" });
 
-            for(var i = FirstYear; i<= CurrentYear; i++)
-            {
-                YearList.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
-            }
-            ViewBag.YearList = YearList;
+            ViewBag.YearList = GetYearRange();
 
             return View();
         }
@@ -101,26 +92,11 @@ namespace TheCarHubApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                string uniqueFileName = null;
-                if(model.Photos != null && model.Photos.Count >0)
-                {
-                    foreach(IFormFile photo in model.Photos)
-                    {
-                        // Add a path to the upload folder (= Images folder)
-                        string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "Images");
-                        // Add a unique identifier at the begining of the file Name
-                        uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
-                        //Create the path for the file 
-                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                        // Upload the file into the Images Folder
-                        photo.CopyTo(new FileStream(filePath, FileMode.Create));
-                    }
-                    
-                }
-
+                // Get MakeName and ModelName using the foreign keys in Cars table
                 model.MakeName = _context.CarMakes.Where(x => x.Id == model.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
                 model.ModelName = _context.CarModels.Where(x => x.Id == model.CarModelId).Select(y => y.ModelName).FirstOrDefault();
 
+                // Create a new instance of Car to save into the Cars table in the database
                 Car newcar = new Car
                 {
                     CarMakeId = model.CarMakeId,
@@ -140,20 +116,43 @@ namespace TheCarHubApp.Controllers
                     Color = model.Color,
                     MakeName = model.MakeName,
                     ModelName = model.ModelName,
-                    PhotoPath = uniqueFileName
                 };
- 
-                _context.Add(newcar);
 
-                //CarPhoto newCarPhoto = new CarPhoto
-                //{
-                //    // create a new CarPhoto and save it into the database
-                //    PhotoTitle = uniqueFileName
-                //};
-                //_context.Add(newCarPhoto);
-
+                _context.Cars.Add(newcar);
                 await _context.SaveChangesAsync();
-                //return RedirectToAction(nameof(Index));
+
+                // Save the (list of) photo file name(s) inside the CarPhotos table in the database
+                string uniqueFileName = null;
+                List<CarPhoto> photos = new List<CarPhoto>();
+                if (model.Photos != null && model.Photos.Count > 0)
+                {
+                    int counter = 1;
+                    foreach (IFormFile photo in model.Photos)
+                    {
+                        CarPhoto carPhoto = new CarPhoto();
+                        // Add a path to the upload folder (= Images folder)
+                        string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "Images");
+                        // Add a unique identifier at the begining of the file Name
+                        uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
+                        //Create the path for the file 
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        // Upload the file into the Images Folder
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            photo.CopyTo(fileStream);
+                        }
+
+                        carPhoto.PhotoName = uniqueFileName;
+                        carPhoto.CarId = newcar.Id;
+                        carPhoto.PhotoTitle = model.MakeName + "_" + model.ModelName + "_" + model.VIN + "-" + counter;
+                        photos.Add(carPhoto);
+                        counter++;
+                    }
+                }
+
+                _context.CarPhotos.AddRange(photos);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction("details", new { id = newcar.Id });
             }
             return View(model);
@@ -185,35 +184,18 @@ namespace TheCarHubApp.Controllers
             carMakeList.Insert(0, new CarMake { Id = 0, MakeName = "-- Select a car make --" });
             carModelList.Insert(0, new CarModel { Id = 0, ModelName = "-- Select a car model --" });
 
-            // Add the list to the ViewBag
+            // Add the lists to the ViewBag
             ViewBag.ListofCarMake = carMakeList;
             ViewBag.ListofCarModel = carModelList;
+            ViewBag.YearList = GetYearRange();
 
-            //CarCreateViewModel carCreateViewModel = new CarCreateViewModel
-            //{
-            //    CarMakeId = car.CarMakeId,
-            //    CarModelId = car.CarModelId,
-            //    VIN = car.VIN,
-            //    Year = car.Year,
-            //    Trim = car.Trim,
-            //    PurchaseDate = car.PurchaseDate,
-            //    PurchasePrice = car.PurchasePrice,
-            //    Repairs = car.Repairs,
-            //    RepairCost = car.RepairCost,
-            //    LotDate = car.LotDate,
-            //    SellingPrice = car.SellingPrice,
-            //    SaleDate = car.SaleDate,
-            //    Description = car.Description,
-            //    Milleage = car.Milleage,
-            //    Color = car.Color,
-            //    MakeName = car.MakeName,
-            //    ModelName = car.ModelName,
-            //    //Photo = new FileStream(car.PhotoPath, FileMode.Append)
-            //    Photo = _context.CarPhotos.Where(x => x.PhotoFile.FileName == car.PhotoPath).Select(y => y.PhotoFile).FirstOrDefault()
-            //};
+            // Get all the photoes associated with the car of the given id into a list
+            var photoes = await _context.CarPhotos.Where(p => p.CarId == id).ToListAsync();
+            ViewBag.Photoes = photoes;
 
             return View(car);
         }
+
 
         [Authorize(Roles = "Administrator")]
         // POST: Cars/Edit/5
@@ -221,7 +203,7 @@ namespace TheCarHubApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName,PhotoPath")] Car car)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName,PhotoPath,CarPhotoes")] Car car)
         {
             if (id != car.Id)
             {
@@ -235,6 +217,44 @@ namespace TheCarHubApp.Controllers
                     car.MakeName = _context.CarMakes.Where(x => x.Id == car.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
                     car.ModelName = _context.CarModels.Where(x => x.Id == car.CarModelId).Select(y => y.ModelName).FirstOrDefault();
 
+                    // Link newly uploaded photoes to the car and add them to the Images folder and to the database
+                    string uniqueFileName = null;
+                    List<CarPhoto> photos = new List<CarPhoto>();
+
+                    if (car.CarPhotoes != null && car.CarPhotoes.Count > 0)
+                    {
+                        // Get the number of the last photo associated with this car
+                        IEnumerable<CarPhoto> query = _context.CarPhotos.OrderBy(photo => photo.Id);
+                        var lastPhotoTitle = query.Last().PhotoTitle;
+                        var LastphotoNumber = lastPhotoTitle.Substring(lastPhotoTitle.IndexOf("-") + 1);
+                        // Increment that number to name the newly uploaded photo
+                        var nextphotoNumber = Convert.ToInt32(LastphotoNumber) + 1;
+
+                        foreach (IFormFile photo in car.CarPhotoes)
+                        {
+                            CarPhoto carPhoto = new CarPhoto();
+                            // Add a path to the upload folder (= Images folder)
+                            string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "Images");
+                            // Add a unique identifier at the begining of the file Name
+                            uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
+                            //Create the path for the file 
+                            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                            // Upload the file into the Images Folder
+                            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                            {
+                                photo.CopyTo(fileStream);
+                            }
+
+                            carPhoto.PhotoName = uniqueFileName;
+                            carPhoto.CarId = car.Id;
+                            carPhoto.PhotoTitle = car.MakeName + "_" + car.ModelName + "_" + car.VIN + "-" + nextphotoNumber;
+                            photos.Add(carPhoto);
+                            nextphotoNumber++;
+                            Console.WriteLine(nextphotoNumber);
+                        }
+                    }
+
+                    _context.CarPhotos.AddRange(photos);
                     _context.Update(car);
                     await _context.SaveChangesAsync();
                 }
@@ -253,6 +273,7 @@ namespace TheCarHubApp.Controllers
             }
             return View(car);
         }
+
 
         [Authorize(Roles = "Administrator")]
         // GET: Cars/Delete/5
@@ -284,40 +305,105 @@ namespace TheCarHubApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var car = await _context.Cars.FindAsync(id);
+
+            // Remove Photos associated to the car from the CarPhotos table
+            var carAssociatedPhotos = _context.CarPhotos.Where(x => x.CarId == car.Id);
+            _context.CarPhotos.RemoveRange(carAssociatedPhotos);
+
+            // Remove photos associated to the car from the Images folder
+            foreach (var photo in carAssociatedPhotos)
+            {
+                // Add a path to the upload folder (= Images folder)
+                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "Images");
+                //Create the path for the file 
+                string filePath = Path.Combine(uploadsFolder, photo.PhotoName);
+                FileInfo file = new FileInfo(filePath);
+
+                if (file.Exists)
+                {
+                    file.Delete();
+                }
+            }
+
+            // Remove the car from the Cars table
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }                                                                                              
 
-        // Method to delete a car photo from the Edit Page
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        /// <summary>
+        /// Method to delete a single car photo from the Edit Page
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Administrator")]
-        // POST: Cars/Edit/5
         [HttpPost, ActionName("DeletePhoto")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePhoto(int id)
         {
-            var car = await _context.Cars.FindAsync(id);
-            car.PhotoPath = null;
-            _context.Cars.Update(car);
+            // Get the photo object associated with the Id from the parameters
+            var Photo = _context.CarPhotos.Find(id);
+
+            int carID = Photo.CarId;
+
+            // Delete the selected photo from the Images folder
+            // Create the path for the file
+            string PhotoFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "Images", Photo.PhotoName);
+            FileInfo file = new FileInfo(PhotoFilePath);
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+
+            // Delete the selected photo from the CarPhotos table in the database
+            _context.CarPhotos.Remove(Photo);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Edit", new { id });
+
+            return RedirectToAction("Edit", new { carID });
+
         }
+
 
         private bool CarExists(int id)
         {
             return _context.Cars.Any(e => e.Id == id);
         }
 
-        // Method to get the list of Car Model associated with a selected Make
+
+        /// <summary>
+        /// Method to get the list of Car Model associated with a selected Make
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult FetchCarModel(int Id)
         {
             var data = _context.CarModels
                 .Where(c => c.CarMakeId == Id).ToList()
                 ;
-            return Json(new {ModelList =  data});
+            return Json(new { ModelList = data });
         }
 
 
+        /// <summary>
+        /// Create a limited list of years (from 1990 to the current year)
+        /// to choose from in the Create and Edit pages
+        /// </summary>
+        /// <returns></returns>
+        public List<SelectListItem> GetYearRange()
+        {
+            int CurrentYear = int.Parse(DateTime.Now.Year.ToString());
+            int FirstYear = 1990;
+            var YearList = new List<SelectListItem>();
+            YearList.Insert(0, new SelectListItem { Text = "-- Select a Year --" });
+
+            for (var i = FirstYear; i <= CurrentYear; i++)
+            {
+                YearList.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
+            }
+            return YearList;
+        }
     }
 }

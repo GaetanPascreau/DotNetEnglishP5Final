@@ -3,15 +3,20 @@
 
 @{
     ViewData["Title"] = "Details";
-    var photoPath = "~/Images/" + (Model.PhotoPath ?? "noimage.jpg");
+    var photoSource = "";
 }
 
-<h1>Details</h1>
+<h1>Car Details</h1>
 
 <div>
-    <h4>Car</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.VIN)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.VIN)
+        </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.MakeName)
         </dt>
@@ -25,10 +30,10 @@
             @Html.DisplayFor(model => model.ModelName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.VIN)
+            @Html.DisplayNameFor(model => model.Trim)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.VIN)
+            @Html.DisplayFor(model => model.Trim)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Year)
@@ -37,10 +42,22 @@
             @Html.DisplayFor(model => model.Year)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Trim)
+            @Html.DisplayNameFor(model => model.Milleage)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Trim)
+            @Html.DisplayFor(model => model.Milleage)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Color)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Color)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PurchaseDate)
@@ -84,27 +101,27 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.SaleDate)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Milleage)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Milleage)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Color)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Color)
-        </dd>
     </dl>
-    <div class="card-body text-center">
-        <img class="card-img-top imageThumbnail" src="@photoPath" alt="photo of the car" asp-append-version="true" />
+
+    <div class="gallery">
+        @if (ViewBag.Photoes != null && ViewBag.Photoes.Count > 0)
+        {
+            var counter = 1;
+            @foreach (var photo in ViewBag.Photoes)
+            {
+                photoSource = "/Images/" + photo.PhotoName;
+                var photoSourceMini = "~/Images/" + photo.PhotoName;
+
+                <a href="@photoSource" data-lightbox="mygallery" data-title="@photo.PhotoTitle">
+                    <img src="@photoSourceMini " alt="photo of the car" class="imageThumbnail" asp-append-version="true" />
+                </a>
+                counter++;
+            }
+        }
+        else
+        {
+            <img class="card-img-top imageThumbnail" src="~/Images/noimage.jpg" alt="photo of the car" asp-append-version="true" />
+        }
     </div>
 </div>
 <div>

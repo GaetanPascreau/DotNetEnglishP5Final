@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TheCarHubApp.Data;
 
 namespace TheCarHubApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220701134433_addingListOfCarPhotoesInCAr")]
+    partial class addingListOfCarPhotoesInCAr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,9 +236,6 @@ namespace TheCarHubApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int?>("CarPhotoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Color")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -254,6 +253,9 @@ namespace TheCarHubApp.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ModelName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoPath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PurchaseDate")
@@ -280,8 +282,7 @@ namespace TheCarHubApp.Data.Migrations
 
                     b.Property<string>("VIN")
                         .IsRequired()
-                        .HasMaxLength(17)
-                        .HasColumnType("nvarchar(17)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
@@ -289,8 +290,6 @@ namespace TheCarHubApp.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CarMakeId");
-
-                    b.HasIndex("CarPhotoId");
 
                     b.ToTable("Cars");
                 });
@@ -344,13 +343,15 @@ namespace TheCarHubApp.Data.Migrations
                     b.Property<int>("CarId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PhotoName")
+                    b.Property<string>("PhotoFilePath")
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhotoTitle")
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CarId");
 
                     b.ToTable("CarPhotos");
                 });
@@ -413,10 +414,6 @@ namespace TheCarHubApp.Data.Migrations
                         .HasForeignKey("CarMakeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("TheCarHubApp.Data.CarPhoto", null)
-                        .WithMany("Cars")
-                        .HasForeignKey("CarPhotoId");
                 });
 
             modelBuilder.Entity("TheCarHubApp.Data.CarModel", b =>
@@ -426,15 +423,24 @@ namespace TheCarHubApp.Data.Migrations
                         .HasForeignKey("CarMakeId");
                 });
 
+            modelBuilder.Entity("TheCarHubApp.Data.CarPhoto", b =>
+                {
+                    b.HasOne("TheCarHubApp.Data.Car", null)
+                        .WithMany("carPhotoes")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TheCarHubApp.Data.Car", b =>
+                {
+                    b.Navigation("carPhotoes");
+                });
+
             modelBuilder.Entity("TheCarHubApp.Data.CarMake", b =>
                 {
                     b.Navigation("CarModels");
 
-                    b.Navigation("Cars");
-                });
-
-            modelBuilder.Entity("TheCarHubApp.Data.CarPhoto", b =>
-                {
                     b.Navigation("Cars");
                 });
 #pragma warning restore 612, 618

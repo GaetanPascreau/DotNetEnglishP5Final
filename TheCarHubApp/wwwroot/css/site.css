@@ -75,3 +75,41 @@ body {
     height: 200px;
     width : auto;
 }
+
+/* Create side-by-side images with flex property */
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.column {
+    flex: 33.33%;
+    padding: 5px;
+}
+
+/* Showing a gallery of images in the Detail page */
+.gallery {
+    margin: 10px 50px;
+}
+
+.gallery img {
+    transition: 1s;
+    padding: 15px;
+    width: 200px;
+    height: auto;
+}
+
+.gallery img:hover {
+    filter: grayscale(100%);
+    transform: scale(1.1);
+}
+
+/* display Cars in a table with fixed headers (works in Firefox and Edge, not in Chrome)*/
+table thead tr th {
+    background-color: white;
+    position: sticky;
+    top: 0px;
+    z-index: 100;
+}
