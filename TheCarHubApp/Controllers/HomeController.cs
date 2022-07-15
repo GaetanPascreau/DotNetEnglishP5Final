@@ -36,12 +36,66 @@ namespace TheCarHubApp.Controllers
             return View(models);
         }
 
+        /// <summary>
+        /// Addition of a research bar on the Home page to search cars by MakeName, ModelName or Year
+        /// </summary>
+        /// <param name="CarSearch"></param>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Index(string CarSearch)
+        public async Task<IActionResult> Index(string CarSearch, string sortingCars)
         {
-            ViewData["GetCarDetails"] = CarSearch;
+            ViewData["FindCar"] = CarSearch;
+
+            ViewData["CarMakeNameASC"] = "MakeASC";
+            ViewData["CarMakeNameDESC"] = "MakeDESC";
+            ViewData["CarModelNameASC"] = "ModelASC";
+            ViewData["CarModelNameDESC"] = "ModelDESC";
+            ViewData["CarYearASC"] = "YearASC";
+            ViewData["CarYearDESC"] = "YearDESC";
+            ViewData["CarMilleageASC"] = "MilleageASC";
+            ViewData["CarMilleageDESC"] = "MilleageDESC";
+            ViewData["CarPriceASC"] = "PriceASC";
+            ViewData["CarPriceDESC"] = "PriceDESC";
 
             var CarQuery = from x in _context.Cars select x;
+
+            switch(sortingCars)
+            {
+                case "MakeASC":
+                    CarQuery = CarQuery.OrderBy(x => x.MakeName);
+                    break;
+                case "MakeDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.MakeName);
+                    break;
+                case "ModelASC":
+                    CarQuery = CarQuery.OrderBy(x => x.ModelName);
+                    break;
+                case "ModelDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.ModelName);
+                    break;
+                case "YearASC":
+                    CarQuery = CarQuery.OrderBy(x => x.Year);
+                    break;
+                case "YearDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.Year);
+                    break;
+                case "MilleageASC":
+                    CarQuery = CarQuery.OrderBy(x => x.Milleage);
+                    break;
+                case "MilleageDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.Milleage);
+                    break;
+                case "PriceASC":
+                    CarQuery = CarQuery.OrderBy(x => x.SellingPrice);
+                    break;
+                case "PriceDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.SellingPrice);
+                    break;
+                default:
+                    CarQuery = CarQuery.OrderByDescending(x => x.MakeName);
+                    break;
+            }
+
             if(!string.IsNullOrEmpty(CarSearch))
             {
                 CarQuery = CarQuery.Where(x => x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
