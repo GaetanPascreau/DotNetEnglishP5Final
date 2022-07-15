@@ -7,6 +7,14 @@
 <h1 style="color: red; text-align:center;">Welcome to The Car Hub !</h1>
 <h4 style="color: blue; text-align:center; margin-bottom: 30px;">Here is an overview of the cars available for sale</h4>
 
+<form method="get" asp-action="Index">
+    <p>
+        <input type="search" placeholder="Enter Make, Model or Year..." value="@ViewData["GetCarDetails"]" name="carSearch" style="width: 500px;" />
+        <input type="submit" value="Search" class="btn btn-primary" /> |
+        <a asp-action="Index">Get All Cars</a>
+    </p>
+</form>
+
 <table class="table table-striped">
     <thead>
         <tr>

@@ -36,6 +36,19 @@ namespace TheCarHubApp.Controllers
             return View(models);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Index(string CarSearch)
+        {
+            ViewData["GetCarDetails"] = CarSearch;
+
+            var CarQuery = from x in _context.Cars select x;
+            if(!string.IsNullOrEmpty(CarSearch))
+            {
+                CarQuery = CarQuery.Where(x => x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
+            }
+            return View(await CarQuery.AsNoTracking().ToListAsync());
+        }
+
         // GET: Cars/Details/5
         public async Task<IActionResult> Details(int? id)
         {
