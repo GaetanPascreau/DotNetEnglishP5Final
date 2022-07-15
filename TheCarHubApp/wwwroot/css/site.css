@@ -113,3 +113,13 @@ table thead tr th {
     top: 0px;
     z-index: 100;
 }
+
+.AdminNav {
+    display:flex;
+}
+
+.AdminNav:hover {
+    cursor: pointer;
+    filter: opacity(100);
+    opacity: 1;
+}    

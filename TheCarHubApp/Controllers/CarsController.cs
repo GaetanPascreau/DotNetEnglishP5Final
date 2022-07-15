@@ -16,6 +16,7 @@ using TheCarHubApp.ViewModels;
 
 namespace TheCarHubApp.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -64,7 +65,6 @@ namespace TheCarHubApp.Controllers
         }
 
 
-        [Authorize(Roles = "Administrator")]
         // GET: Cars/Create  MODIFIED with addition of a dropdown lists for CarMakes and CarModels
         public IActionResult Create()
         {
@@ -82,7 +82,6 @@ namespace TheCarHubApp.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrator")]
         // POST: Cars/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -158,7 +157,6 @@ namespace TheCarHubApp.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Administrator")]
         // GET: Cars/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -191,13 +189,12 @@ namespace TheCarHubApp.Controllers
 
             // Get all the photoes associated with the car of the given id into a list
             var photoes = await _context.CarPhotos.Where(p => p.CarId == id).ToListAsync();
-            ViewBag.Photoes = photoes;
+            TempData["Photoes"] = photoes;
 
             return View(car);
         }
 
 
-        [Authorize(Roles = "Administrator")]
         // POST: Cars/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -275,7 +272,6 @@ namespace TheCarHubApp.Controllers
         }
 
 
-        [Authorize(Roles = "Administrator")]
         // GET: Cars/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -298,7 +294,6 @@ namespace TheCarHubApp.Controllers
             return View(car);
         }
 
-        [Authorize(Roles = "Administrator")]
         // POST: Cars/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -338,7 +333,6 @@ namespace TheCarHubApp.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = "Administrator")]
         [HttpPost, ActionName("DeletePhoto")]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePhoto(int id)
@@ -361,10 +355,10 @@ namespace TheCarHubApp.Controllers
             _context.CarPhotos.Remove(Photo);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Edit", new { carID });
+            return RedirectToAction("Edit", new { id = carID });
 
         }
-
+         
 
         private bool CarExists(int id)
         {

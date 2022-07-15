@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Edit";
     var photoSource = "";
-
+    var photoes = TempData["Photoes"] as List<TheCarHubApp.Data.CarPhoto>;
 }
 
 <h1>Car Edition</h1>
@@ -66,7 +66,7 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Setup Margin ($500 by default)</label>
-                <input class="form-control" id="Margin" placeholder="500" />
+                <input class="form-control" id="Margin" placeholder="500"  onchange="window.calc" value="500" />
             </div>
             <div class="form-group">
                 <label asp-for="PurchaseDate" class="control-label"></label>
@@ -75,7 +75,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="PurchasePrice" class="control-label"></label>
-                <input asp-for="PurchasePrice" class="form-control" />
+                <input asp-for="PurchasePrice" class="form-control"  onchange="window.calc" />
                 <span asp-validation-for="PurchasePrice" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -85,7 +85,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="RepairCost" class="control-label"></label>
-                <input asp-for="RepairCost" class="form-control" />
+                <input asp-for="RepairCost" class="form-control"  onchange="window.calc" />
                 <span asp-validation-for="RepairCost" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -105,9 +105,9 @@
             </div>
 
             <div class="gallery" style="width: 300%; display: flex; flex-wrap: wrap; align-content: space-around; align-items: flex-end; gap: 10px 30px;">
-                @if (ViewBag.Photoes != null && ViewBag.Photoes.Count > 0)
+                @if (photoes != null && photoes.Count > 0)
                 {
-                    @foreach (var photo in ViewBag.Photoes)
+                    @foreach (var photo in photoes)
                     {
                         photoSource = "~/Images/" + photo.PhotoName;
 
@@ -152,7 +152,7 @@
                 'Content-type': 'application/json'
             }
 
-        }).then(res => console.log(res)).catch(err => console.log(err))
+        }).then(res => {window.location.reload()}).catch(err => console.log(err))
     }
 
     $(document).ready(function () {
@@ -174,11 +174,11 @@
         console.log(placeholder);
         console.log($("#Margin").val());
         if ($("#Margin").val() == "") {
-            $("#PurchasePrice, #RepairCost").on("input", calc)
+            $("#PurchasePrice, #RepairCost").on("change", calc)
             console.log("margin input field wasn't filled")
         }
         else {
-            $("#Margin, #PurchasePrice, #RepairCost").on("input", calc)
+            $("#Margin, #PurchasePrice, #RepairCost").on("change", calc)
         }
         $("#calc").on("click", calc);
 

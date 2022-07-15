@@ -1,0 +1,128 @@
+﻿@model TheCarHubApp.Data.Car
+
+@{
+    ViewData["Title"] = "Details";
+    var photoSource = "";
+}
+
+<h1>Car Details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.VIN)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.VIN)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MakeName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MakeName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ModelName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ModelName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Trim)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Trim)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Year)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Milleage)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Milleage)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Color)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Color)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PurchaseDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PurchaseDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PurchasePrice)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PurchasePrice)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Repairs)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Repairs)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RepairCost)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RepairCost)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LotDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LotDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SellingPrice)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SellingPrice)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SaleDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SaleDate)
+        </dd>
+    </dl>
+
+    <div class="gallery">
+        @if (ViewBag.Photoes != null && ViewBag.Photoes.Count > 0)
+        {
+        var counter = 1;
+        @foreach (var photo in ViewBag.Photoes)
+        {
+        photoSource = "/Images/" + photo.PhotoName;
+        var photoSourceMini = "~/Images/" + photo.PhotoName;
+
+        <a href="@photoSource" data-lightbox="mygallery" data-title="@photo.PhotoTitle">
+            <img src="@photoSourceMini " alt="photo of the car" class="imageThumbnail" asp-append-version="true" />
+        </a>
+        counter++;
+        }
+        }
+        else
+        {
+        <img class="card-img-top imageThumbnail" src="~/Images/noimage.jpg" alt="photo of the car" asp-append-version="true" />
+        }
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

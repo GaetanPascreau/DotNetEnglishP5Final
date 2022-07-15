@@ -4,10 +4,14 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div style="display: flex;">
+    <h2>Cars Management | </h2>
+    <h2><a asp-controller="CarModels" asp-action="Index"> Models management | </a></h2>
+    <h2><a asp-controller="CarMakes" asp-action="Index"> Makes Management</a></h2>
+</div>
 
 <p>
-    <a asp-action="Create">Create New Car</a>
+    <a asp-action="Create">Add a New Car</a>
 </p>
 
 <table class="table table-striped">
