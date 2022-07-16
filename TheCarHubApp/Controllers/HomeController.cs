@@ -23,10 +23,13 @@ namespace TheCarHubApp.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        // GET: Cars
+        /// <summary>
+        /// Display the list of available car on the Home page
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
-            var models = await _context.Cars.ToListAsync();
+            var models = await _context.Cars.Where(x => x.SaleDate == null).ToListAsync();
             // Get the Make Name and the Model Name for each car on the list by using the foreign keys carMakeId and carModelId
             for (int i = 0; i < models.Count; i++)
             {
@@ -37,10 +40,12 @@ namespace TheCarHubApp.Controllers
         }
 
         /// <summary>
-        /// Addition of a research bar on the Home page to search cars by MakeName, ModelName or Year
+        /// Addition of a research bar on the Home page to search cars by MakeName, ModelName or Year + sorting options to display cars list
         /// </summary>
         /// <param name="CarSearch"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// The Home/Index view with the result of the Car search or the sorted list of cars
+        /// </returns>
         [HttpGet]
         public async Task<IActionResult> Index(string CarSearch, string sortingCars)
         {
@@ -103,7 +108,13 @@ namespace TheCarHubApp.Controllers
             return View(await CarQuery.AsNoTracking().ToListAsync());
         }
 
-        // GET: Cars/Details/5
+        /// <summary>
+        ///  GET: Home/Details/id => Display details for the selected car, without options to edit or delete the car
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// The Home/Details/id view for the selected car
+        /// </returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -111,8 +122,7 @@ namespace TheCarHubApp.Controllers
                 return NotFound();
             }
 
-            var car = await _context.Cars
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var car = await _context.Cars.FirstOrDefaultAsync(m => m.Id == id);
 
             // Get all the photos associated with the car of the given id into a list
             var photos = await _context.CarPhotos.Where(p => p.CarId == id).ToListAsync();

@@ -28,20 +28,33 @@ namespace TheCarHubApp.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        // GET: Cars
+        /// <summary>
+        /// GET: Cars => Display the list of cars (from the cars table in the database) on the Index page.
+        /// </summary>
+        /// <returns>
+        /// The Cars/Index view with the list of cars.
+        /// </returns>
         public async Task<IActionResult> Index()
         {
             var models = await _context.Cars.ToListAsync();
-            // Get the Make Name and the Model Name for each car on the list by using the foreign keys carMakeId and carModelId
+
+            // Get the Make Name (from CarMake table) and the Model Name (from CarModel table) for each car on the list
             for (int i = 0; i < models.Count; i++)
             {
                 models[i].MakeName = _context.CarMakes.Where(x => x.Id == models[i].CarMakeId).Select(y => y.MakeName).FirstOrDefault();
                 models[i].ModelName = _context.CarModels.Where(x => x.Id == models[i].CarModelId).Select(y => y.ModelName).FirstOrDefault();
             }
+
             return View(models);
         }
 
-        // GET: Cars/Details/5
+        /// <summary>
+        /// GET: Cars/Details/5 => Display details for the car with the specified Id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// The Cars/Detail/id view with the details for the specified car.
+        /// </returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,11 +62,11 @@ namespace TheCarHubApp.Controllers
                 return NotFound();
             }
 
-            var car = await _context.Cars
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var car = await _context.Cars.FirstOrDefaultAsync(m => m.Id == id);
 
-            // Get all the photos associated with the car of the given id into a list
+            // Get all the photoes associated with the car of the specified id into a list
             var photos = await _context.CarPhotos.Where(p => p.CarId == id).ToListAsync();
+            // Add the list to the ViewBag
             ViewBag.Photoes = photos;
 
             if (car == null)
@@ -64,8 +77,12 @@ namespace TheCarHubApp.Controllers
             return View(car);
         }
 
-
-        // GET: Cars/Create  MODIFIED with addition of a dropdown lists for CarMakes and CarModels
+        /// <summary>
+        /// GET: Cars/Create  => Display the form to Create a new car, using dropdown lists to select existing CarMakes, CarModels and Years.
+        /// </summary>
+        /// <returns>
+        /// The Cars/Create view with the form to complete.
+        /// </returns>
         public IActionResult Create()
         {
             // Populate the 1st Select options, for Car Makes
@@ -82,16 +99,21 @@ namespace TheCarHubApp.Controllers
             return View();
         }
 
-        // POST: Cars/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// POST: Cars/Create => Create a car using data from the form and save it into the database.
+        /// To protect from overposting attacks, enable the specific properties you want to bind to.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>
+        /// The Cars/Details view for the newly created car if the form is completed and valid, else stay on the Create page.
+        /// </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName,Photos")] CarCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // Get MakeName and ModelName using the foreign keys in Cars table
+                // Get MakeName and ModelName from CarMakes and CarModels tables
                 model.MakeName = _context.CarMakes.Where(x => x.Id == model.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
                 model.ModelName = _context.CarModels.Where(x => x.Id == model.CarModelId).Select(y => y.ModelName).FirstOrDefault();
 
@@ -120,7 +142,7 @@ namespace TheCarHubApp.Controllers
                 _context.Cars.Add(newcar);
                 await _context.SaveChangesAsync();
 
-                // Save the (list of) photo file name(s) inside the CarPhotos table in the database
+                // Save the (list of) photo file(s) inside the CarPhotos table in the database
                 string uniqueFileName = null;
                 List<CarPhoto> photos = new List<CarPhoto>();
                 if (model.Photos != null && model.Photos.Count > 0)
@@ -141,6 +163,7 @@ namespace TheCarHubApp.Controllers
                             photo.CopyTo(fileStream);
                         }
 
+                        // update the photo's properties for the carPhoto object and add the photo to the list
                         carPhoto.PhotoName = uniqueFileName;
                         carPhoto.CarId = newcar.Id;
                         carPhoto.PhotoTitle = model.MakeName + "_" + model.ModelName + "_" + model.VIN + "-" + counter;
@@ -149,15 +172,23 @@ namespace TheCarHubApp.Controllers
                     }
                 }
 
+                // Add the list of photoes to the Carphotos table in the database
                 _context.CarPhotos.AddRange(photos);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("details", new { id = newcar.Id });
             }
+
             return View(model);
         }
 
-        // GET: Cars/Edit/5
+        /// <summary>
+        /// GET: Cars/Edit/5 => Display the form to Edit the specified car.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// The Cars/Edit/id view with the form to Edit the selected car.
+        /// </returns>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -165,7 +196,9 @@ namespace TheCarHubApp.Controllers
                 return NotFound();
             }
 
+            // Get all properties from the selected car in the datadabase
             var car = await _context.Cars.FindAsync(id);
+
             if (car == null)
             {
                 return NotFound();
@@ -174,7 +207,7 @@ namespace TheCarHubApp.Controllers
             List<CarMake> carMakeList = new List<CarMake>();
             List<CarModel> carModelList = new List<CarModel>();
 
-            // Fill the lists with all items from the CarMakes and CarModels tables
+            // Fill the lists with all items from the CarMakes and CarModels tables, in order to fill the Select fields
             carMakeList = (from c in _context.CarMakes select c).ToList();
             carModelList = (from c in _context.CarModels select c).ToList();
 
@@ -194,10 +227,15 @@ namespace TheCarHubApp.Controllers
             return View(car);
         }
 
-
-        // POST: Cars/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// POST: Cars/Edit/5 => Edit a car using data from the form and save it into the database.
+        /// To protect from overposting attacks, enable the specific properties you want to bind to.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="car"></param>
+        /// <returns>
+        /// To the Cars/Index view if the form is completed and valid, else stay on the Edit page for the selected car.
+        /// </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName,PhotoPath,CarPhotoes")] Car car)
@@ -211,6 +249,7 @@ namespace TheCarHubApp.Controllers
             {
                 try
                 {
+                    // Get MakeName and ModelName from CarMakes and CarModels tables
                     car.MakeName = _context.CarMakes.Where(x => x.Id == car.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
                     car.ModelName = _context.CarModels.Where(x => x.Id == car.CarModelId).Select(y => y.ModelName).FirstOrDefault();
 
@@ -221,7 +260,7 @@ namespace TheCarHubApp.Controllers
                     if (car.CarPhotoes != null && car.CarPhotoes.Count > 0)
                     {
                         // Get the number of the last photo associated with this car
-                        IEnumerable<CarPhoto> query = _context.CarPhotos.OrderBy(photo => photo.Id);
+                        IEnumerable<CarPhoto> query = _context.CarPhotos.Where(x => x.CarId == car.Id).OrderBy(photo => photo.Id);
                         var lastPhotoTitle = query.Last().PhotoTitle;
                         var LastphotoNumber = lastPhotoTitle.Substring(lastPhotoTitle.IndexOf("-") + 1);
                         // Increment that number to name the newly uploaded photo
@@ -247,10 +286,10 @@ namespace TheCarHubApp.Controllers
                             carPhoto.PhotoTitle = car.MakeName + "_" + car.ModelName + "_" + car.VIN + "-" + nextphotoNumber;
                             photos.Add(carPhoto);
                             nextphotoNumber++;
-                            Console.WriteLine(nextphotoNumber);
                         }
                     }
 
+                    // Save the list of newly uploaded photoes into the CarPhotos table in the database
                     _context.CarPhotos.AddRange(photos);
                     _context.Update(car);
                     await _context.SaveChangesAsync();
@@ -266,13 +305,21 @@ namespace TheCarHubApp.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(car);
         }
 
 
-        // GET: Cars/Delete/5
+        /// <summary>
+        /// GET: Cars/Delete/5 => Display the selected car to delete from the Cars table.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// The Cars/Delete view with all car information from the specified car.
+        /// </returns>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -280,8 +327,8 @@ namespace TheCarHubApp.Controllers
                 return NotFound();
             }
 
-            var car = await _context.Cars
-                .FirstOrDefaultAsync(m => m.Id == id);
+            // Get the car with specified Id from the database
+            var car = await _context.Cars.FirstOrDefaultAsync(m => m.Id == id);
 
             car.MakeName = _context.CarMakes.Where(x => x.Id == car.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
             car.ModelName = _context.CarModels.Where(x => x.Id == car.CarModelId).Select(y => y.ModelName).FirstOrDefault();
@@ -294,11 +341,18 @@ namespace TheCarHubApp.Controllers
             return View(car);
         }
 
-        // POST: Cars/Delete/5
+        /// <summary>
+        /// POST: Cars/Delete/5 => Delete a selected car from the Cars table, as well as its associated photoes (from Images folder and Carphotos table).
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// To the Cars/Index view.
+        /// </returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // Get the car with specified Id from the database
             var car = await _context.Cars.FindAsync(id);
 
             // Remove Photos associated to the car from the CarPhotos table
@@ -329,12 +383,13 @@ namespace TheCarHubApp.Controllers
 
 
         /// <summary>
-        /// Method to delete a single car photo from the Edit Page
+        /// In the Edit Page, Delete a single car photo from the CarPhotos table and the Images folder. 
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// To the Cars/Edit view for the selected car => stay on the page until the form is saved.
+        /// </returns>
         [HttpPost, ActionName("DeletePhoto")]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePhoto(int id)
         {
             // Get the photo object associated with the Id from the parameters
@@ -342,10 +397,10 @@ namespace TheCarHubApp.Controllers
 
             int carID = Photo.CarId;
 
-            // Delete the selected photo from the Images folder
             // Create the path for the file
             string PhotoFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "Images", Photo.PhotoName);
             FileInfo file = new FileInfo(PhotoFilePath);
+            // Delete the selected photo from the Images folder
             if (file.Exists)
             {
                 file.Delete();
@@ -356,7 +411,6 @@ namespace TheCarHubApp.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Edit", new { id = carID });
-
         }
          
 
@@ -367,30 +421,32 @@ namespace TheCarHubApp.Controllers
 
 
         /// <summary>
-        /// Method to get the list of Car Model associated with a selected Make
+        /// Get the list of Car Models associated with a selected Make.
         /// </summary>
         /// <param name="Id"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// The list of Car Models for the selected Make in a Json format.
+        /// </returns>
         [HttpGet]
         public IActionResult FetchCarModel(int Id)
         {
-            var data = _context.CarModels
-                .Where(c => c.CarMakeId == Id).ToList()
-                ;
+            var data = _context.CarModels.Where(c => c.CarMakeId == Id).ToList();
             return Json(new { ModelList = data });
         }
 
 
         /// <summary>
-        /// Create a limited list of years (from 1990 to the current year)
-        /// to choose from in the Create and Edit pages
+        /// Create a limited list of years (from 1990 to the current year), to choose from in the Create and Edit pages
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A list of years
+        /// </returns>
         public List<SelectListItem> GetYearRange()
         {
             int CurrentYear = int.Parse(DateTime.Now.Year.ToString());
             int FirstYear = 1990;
             var YearList = new List<SelectListItem>();
+            // Add a default value on top of the list, to display in the Select field
             YearList.Insert(0, new SelectListItem { Text = "-- Select a Year --" });
 
             for (var i = FirstYear; i <= CurrentYear; i++)
