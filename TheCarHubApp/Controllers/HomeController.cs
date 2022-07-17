@@ -141,6 +141,12 @@ namespace TheCarHubApp.Controllers
             return View();
         }
 
+        public IActionResult Contact()
+        {
+            ViewData["API_KEY"] = "AIzaSyBfVYH1kT7ouXSc1BOeCwiDrZ2kagqyuyE";
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

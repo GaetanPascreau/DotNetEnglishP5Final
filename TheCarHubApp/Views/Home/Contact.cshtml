@@ -1,0 +1,136 @@
+﻿@{
+    ViewData["Title"] = "Contact Us";
+    var MyKey = ViewData["API_KEY"];
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div style="display: flex; flex-direction: column; justify-content: space-around; height: 500px; width: 500px;">
+            <div>
+                <strong>CONTACT INFORMATION:</strong>
+                <hr />
+                <strong>Address: </strong>
+                <address>
+                    The Car hub<br />
+                    13300 E. Mississippi Avenue Avenue<br />
+                    Aurora, Co 80012<br />
+                </address>
+
+                <p>
+                    <strong>Email:</strong> <a href="mailto:Contact@TheCarHub.com">Contact@TheHubCar.com</a><br />
+                </p>
+
+                <p>
+                    <strong>Phone:</strong> 303-341-8286
+                </p>
+            </div>
+
+            <div>
+                <strong>HOURS OF OPERATION</strong>
+                <hr />
+                <table>
+                    <tr>
+                        <td style="width: 100px;">Mon-Fri</td>
+                        <td style="text-align: end;">08:00 AM - 06:00 PM</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 100px;">Sat</td>
+                        <td style="text-align: end;">08:30 AM - 12:30 PM</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 100px;">Sun</td>
+                        <td style="text-align: end;">Closed</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div id="map" style="height: 500px; width: 500px;"></div>
+        <script>
+            var map;
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: { lat: 39.69615, lng: -104.83447 },
+                    zoom: 18
+                });
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(39.69615, -104.83447),
+                    map: map,
+                    title: "The Car Hub"
+                });
+            }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=@(MyKey)&callback=initMap" async defer></script>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+@*<script src="https://maps.googleapis.com/maps/api/js?sensor=false&callback=myMap"></script>
+    <script type="text/javascript">
+        var map;
+        function LoadGoogleMap() {
+            var SetMapOptions = {
+                zoom: 10,
+                center: new google.maps.LatLng(-34.397, 150.644)
+            };
+            map = new google.maps.Map(document.getElementById('canvasMap'),
+                SetmapOptions);
+        }
+        google.maps.event.addDomListener(window, 'load', LoadGoogleMap);
+    </script>
+
+    <h2>@ViewData["Title"]</h2>
+    <h3>@ViewData["Message"]</h3>
+
+    <div id="canvasMap" style="height: 60%; margin: 0px; padding: 0px;"></div>
+
+    <div style="display: flex; justify-content: space-around;">
+        <div>
+            <strong>CONTACT INFORMATION:</strong>
+            <hr />
+            <strong>Address: </strong>
+            <address>
+                The Car hub<br />
+                13300 E. Mississippi Avenue Avenue<br />
+                Aurora, Co 80012<br />
+            </address>
+
+            <p>
+                <strong>Email:</strong> <a href="mailto:Contact@TheCarHub.com">Contact@TheHubCar.com</a><br />
+            </p>
+
+            <p>
+                <strong>Phone:</strong> 303-341-8286
+            </p>
+        </div>
+
+        <div>
+            <strong>HOURS OF OPERATION</strong>
+            <hr />
+            <table>
+                <tr>
+                    <td style="width: 100px;">Mon-Fri</td>
+                    <td style="text-align: end;">08:00 AM - 06:00 PM</td>
+                </tr>
+                <tr>
+                    <td style="width: 100px;">Sat</td>
+                    <td style="text-align: end;">08:30 AM - 12:30 PM</td>
+                </tr>
+                <tr>
+                    <td style="width: 100px;">Sun</td>
+                    <td style="text-align: end;">Closed</td>
+                </tr>
+            </table>
+        </div>
+    </div>*@
