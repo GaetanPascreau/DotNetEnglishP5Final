@@ -101,10 +101,11 @@ namespace TheCarHubApp.Controllers
                     break;
             }
 
-            if(!string.IsNullOrEmpty(CarSearch))
+            if (!string.IsNullOrEmpty(CarSearch))
             {
                 CarQuery = CarQuery.Where(x => x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
             }
+
             return View(await CarQuery.AsNoTracking().ToListAsync());
         }
 

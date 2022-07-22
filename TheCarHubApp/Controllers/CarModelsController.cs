@@ -32,6 +32,52 @@ namespace TheCarHubApp.Controllers
             return View(models);
         }
 
+        /// <summary>
+        /// Addition of a research bar on the Index page to search CarModels by ModelName + sorting options to display Models list
+        /// </summary>
+        /// <param name="ModelSearch"></param>
+        /// <returns>
+        /// The CarModels/Index view with the result of the Model search or the sorted list of Models
+        /// </returns>
+        [HttpGet]
+        public async Task<IActionResult> Index(string ModelSearch, string sortingModels)
+        {
+            ViewData["FindModel"] = ModelSearch;
+
+            ViewData["CarMakeNameASC"] = "MakeASC";
+            ViewData["CarMakeNameDESC"] = "MakeDESC";
+            ViewData["CarModelNameASC"] = "ModelASC";
+            ViewData["CarModelNameDESC"] = "ModelDESC";
+
+            var ModelQuery = from x in _context.CarModels select x;
+
+            switch(sortingModels)
+            {
+                case "MakeASC":
+                    ModelQuery = ModelQuery.OrderBy(x => x.MakeName);
+                    break;
+                case "MakeDESC":
+                    ModelQuery = ModelQuery.OrderByDescending(x => x.MakeName);
+                    break;
+                case "ModelASC":
+                    ModelQuery = ModelQuery.OrderBy(x => x.ModelName);
+                    break;
+                case "ModelDESC":
+                    ModelQuery = ModelQuery.OrderByDescending(x => x.ModelName);
+                    break;
+                default:
+                    ModelQuery = ModelQuery.OrderByDescending(x => x.MakeName);
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(ModelSearch))
+            {
+                ModelQuery = ModelQuery.Where(x => x.MakeName.Contains(ModelSearch) || x.ModelName.Contains(ModelSearch));
+            }
+            return View(await ModelQuery.AsNoTracking().ToListAsync());
+        }
+
+
         // GET: CarModels/Details/5
         public async Task<IActionResult> Details(int? id)
         {

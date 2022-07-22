@@ -49,13 +49,50 @@ namespace TheCarHubApp.Controllers
         }
 
         /// <summary>
-        /// GET: Cars/Details/5 => Display details for the car with the specified Id.
+        /// Addition of a research bar on the Home page to search cars by VIN, MakeName, ModelName or Year
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="CarSearch"></param>
         /// <returns>
-        /// The Cars/Detail/id view with the details for the specified car.
+        /// The Home/Index view with the result of the Car search or the sorted list of cars
         /// </returns>
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Index(string CarSearch, string sortingCars)
+        {
+            ViewData["FindCar"] = CarSearch;
+
+            ViewData["SoldCar"] = "SoldCar";
+            ViewData["AvailableCar"] = "AvailableCar";
+
+            var CarQuery = from x in _context.Cars select x;
+
+            switch(sortingCars)
+            {
+                case "SoldCar":
+                    CarQuery = CarQuery.Where(c => c.SaleDate != null);
+                    break;
+                case "AvailableCar":
+                    CarQuery = CarQuery.Where(c => c.SaleDate == null);
+                    break;
+                default:
+                    CarQuery = from x in _context.Cars select x;
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(CarSearch))
+            {
+                CarQuery = CarQuery.Where(x => x.VIN.Contains(CarSearch) || x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
+            }
+            return View(await CarQuery.AsNoTracking().ToListAsync());
+        }
+
+            /// <summary>
+            /// GET: Cars/Details/5 => Display details for the car with the specified Id.
+            /// </summary>
+            /// <param name="id"></param>
+            /// <returns>
+            /// The Cars/Detail/id view with the details for the specified car.
+            /// </returns>
+            public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -249,6 +286,9 @@ namespace TheCarHubApp.Controllers
             {
                 try
                 {
+                    // Get the list of photoes already associated with the current car, if there is one
+                    List<CarPhoto> existingPhotoes = _context.CarPhotos.Where(p => p.CarId == id).ToList();
+                    var nextphotoNumber = 0;
                     // Get MakeName and ModelName from CarMakes and CarModels tables
                     car.MakeName = _context.CarMakes.Where(x => x.Id == car.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
                     car.ModelName = _context.CarModels.Where(x => x.Id == car.CarModelId).Select(y => y.ModelName).FirstOrDefault();
@@ -259,12 +299,23 @@ namespace TheCarHubApp.Controllers
 
                     if (car.CarPhotoes != null && car.CarPhotoes.Count > 0)
                     {
-                        // Get the number of the last photo associated with this car
-                        IEnumerable<CarPhoto> query = _context.CarPhotos.Where(x => x.CarId == car.Id).OrderBy(photo => photo.Id);
-                        var lastPhotoTitle = query.Last().PhotoTitle;
-                        var LastphotoNumber = lastPhotoTitle.Substring(lastPhotoTitle.IndexOf("-") + 1);
-                        // Increment that number to name the newly uploaded photo
-                        var nextphotoNumber = Convert.ToInt32(LastphotoNumber) + 1;
+                        // If there already are photoes associated to that car
+                        if (existingPhotoes.Count > 0)
+                        {
+                            // Get the number of the last photo associated with this car if there is one
+                            IEnumerable<CarPhoto> query = _context.CarPhotos.Where(x => x.CarId == car.Id).OrderBy(photo => photo.Id);
+
+                            var lastPhotoTitle = query.Last().PhotoTitle;
+                            var LastphotoNumber = lastPhotoTitle.Substring(lastPhotoTitle.IndexOf("-") + 1);
+
+                            // Increment that number to name the newly uploaded photo
+                            nextphotoNumber = Convert.ToInt32(LastphotoNumber) + 1; 
+                        }
+                        else 
+                        {
+                            // If there was no photo previously associated to that car
+                            nextphotoNumber = 1;
+                        }
 
                         foreach (IFormFile photo in car.CarPhotoes)
                         {

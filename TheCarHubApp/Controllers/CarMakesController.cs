@@ -26,6 +26,44 @@ namespace TheCarHubApp.Controllers
             return View(await _context.CarMakes.ToListAsync());
         }
 
+        /// <summary>
+        /// Addition of a research bar on the Index page to search CarMakes by MakeName + sorting options to display Makes list
+        /// </summary>
+        /// <param name="MakeSearch"></param>
+        /// <returns>
+        /// The CarMakes/Index view with the result of the Make search or the sorted list of Makes
+        /// </returns>
+        [HttpGet]
+        public async Task<IActionResult> Index(string MakeSearch, string sortingMakes)
+        {
+            ViewData["FindMake"] = MakeSearch;
+
+            ViewData["CarMakeNameASC"] = "MakeASC";
+            ViewData["CarMakeNameDESC"] = "MakeDESC";
+
+            var MakeQuery = from x in _context.CarMakes select x;
+
+            switch (sortingMakes)
+            {
+                case "MakeASC":
+                    MakeQuery = MakeQuery.OrderBy(x => x.MakeName);
+                    break;
+                case "MakeDESC":
+                    MakeQuery = MakeQuery.OrderByDescending(x => x.MakeName);
+                    break;
+                default:
+                    MakeQuery = MakeQuery.OrderByDescending(x => x.MakeName);
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(MakeSearch))
+            {
+                MakeQuery = MakeQuery.Where(x => x.MakeName.Contains(MakeSearch));
+            }
+            return View(await MakeQuery.AsNoTracking().ToListAsync());
+        }
+
+
         // GET: CarMakes/Details/5
         public async Task<IActionResult> Details(int? id)
         {

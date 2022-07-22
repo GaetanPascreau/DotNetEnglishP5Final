@@ -14,9 +14,27 @@
     <a asp-action="Create">Add a New Car</a>
 </p>
 
+<form method="get" asp-action="Index">
+    <div style="display: flex; margin-bottom: 50px;">
+        <div class="form-outline">
+            <input type="search" placeholder="Enter VIN, Make, Model or Year..." value="@ViewData["FindCar"]" name="carSearch" style="width: 500px;" class="form-control" />
+        </div>
+        <div>
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-action="Index">Get All Cars</a>
+        </div>
+    </div>
+
+</form>
+
 <table class="table table-striped">
     <thead>
         <tr>
+            <th>
+                AVAILABILITY
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["SoldCar"]" title="Sold"><img src="~/Images/SoldCars2.png" alt="U" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["AvailableCar"]" title="Available"><img src="~/Images/AvailableCars2.png" alt="D" /></a>
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.VIN)
             </th>
@@ -69,6 +87,12 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    @if (item.SaleDate != null)
+                    {
+                        <img src="~/Images/sold.png" alt="Sold !" />
+                    }
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.VIN)
                 </td>
@@ -123,3 +147,33 @@
         }
     </tbody>
 </table>
+
+<button onclick="topFunction()" id="myBtn" title="Go to top"
+        style="display: none; position: fixed; bottom: 20px; right: 30px; z-index: 99; border: none; outline: none; background-color: mediumblue;
+            color: white; cursor: pointer; padding: 15px; border-radius: 10px; font-size: 18px;">
+    Top
+</button>
+
+
+<script>
+    //Get the button:
+    mybutton = document.getElementById("myBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function () { scrollFunction() };
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
+

@@ -7,18 +7,33 @@
 
 <div style="display:flex;">
     <h2><a asp-controller="Cars" asp-action="Index"> Cars Management | </a></h2>
-    <h2><a asp-controller="CarModels" asp-action="Index"> Models management |</a></h2>
+    <h2><a asp-controller="CarModels" asp-action="Index"> Models Management |</a></h2>
     <h2> Makes Management</h2>
 </div>
 
 <p>
     <a asp-action="Create">Add a New Make</a>
 </p>
+
+<form method="get" asp-action="Index">
+    <div style="display: flex; margin-bottom: 50px;">
+        <div class="form-outline">
+            <input type="search" placeholder="Enter Make..." value="@ViewData["FindMake"]" name="MakeSearch" style="width: 500px;" class="form-control" />
+        </div>
+        <div>
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-action="Index">Get All Makes</a>
+        </div>
+    </div>
+</form>
+
 <table class="table">
-    <thead>
+    <thead style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.MakeName)
+                <a asp-action="Index" asp-route-sortingMakes="@ViewData["CarMakeNameASC"]"><img src="~/Images/up.png" alt="U" /></a>
+                <a asp-action="Index" asp-route-sortingMakes="@ViewData["CarMakeNameDESC"]"><img src="~/Images/down.png" alt="D" /></a>
             </th>
             <th></th>
         </tr>
@@ -39,3 +54,32 @@
         }
     </tbody>
 </table>
+
+<button onclick="topFunction()" id="myBtn" title="Go to top"
+        style="display: none; position: fixed; bottom: 20px; right: 30px; z-index: 99; border: none; outline: none; background-color: mediumblue;
+            color: white; cursor: pointer; padding: 15px; border-radius: 10px; font-size: 18px;">
+    Top
+</button>
+
+
+<script>
+    //Get the button:
+    mybutton = document.getElementById("myBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function () { scrollFunction() };
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
