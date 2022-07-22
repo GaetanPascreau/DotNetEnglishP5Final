@@ -62,9 +62,30 @@ namespace TheCarHubApp.Controllers
 
             ViewData["SoldCar"] = "SoldCar";
             ViewData["AvailableCar"] = "AvailableCar";
+            ViewData["CarMakeNameASC"] = "MakeASC";
+            ViewData["CarMakeNameDESC"] = "MakeDESC";
+            ViewData["CarModelNameASC"] = "ModelASC";
+            ViewData["CarModelNameDESC"] = "ModelDESC";
+            ViewData["CarYearASC"] = "YearASC";
+            ViewData["CarYearDESC"] = "YearDESC";
+            ViewData["CarMilleageASC"] = "MilleageASC";
+            ViewData["CarMilleageDESC"] = "MilleageDESC";
+            ViewData["PurchasePriceASC"] = "PurchasePriceASC";
+            ViewData["PurchasrPiceDESC"] = "PurchasPriceDESC";
+            ViewData["RepairCostASC"] = "RepairCostASC";
+            ViewData["RepairCostDESC"] = "RepairCostDESC";
+            ViewData["SellingPriceASC"] = "SellingPriceASC";
+            ViewData["SellingPriceDESC"] = "SellingPriceDESC";
+            ViewData["PurchaseDateASC"] = "PurchaseDateASC";
+            ViewData["PurchaseDateDESC"] = "PurchaseDateDESC";
+            ViewData["LotDateASC"] = "LotDateASC";
+            ViewData["LotDateDESC"] = "LotDateDESC";
+            ViewData["SaleDateASC"] = "SaleDateASC";
+            ViewData["SaleDateDESC"] = "SaleDateDESC";
 
             var CarQuery = from x in _context.Cars select x;
 
+            // sort cars by their characteristics (Make, Model, Year, Sale price...)
             switch(sortingCars)
             {
                 case "SoldCar":
@@ -73,8 +94,68 @@ namespace TheCarHubApp.Controllers
                 case "AvailableCar":
                     CarQuery = CarQuery.Where(c => c.SaleDate == null);
                     break;
+                case "MakeASC":
+                    CarQuery = CarQuery.OrderBy(x => x.MakeName);
+                    break;
+                case "MakeDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.MakeName);
+                    break;
+                case "ModelASC":
+                    CarQuery = CarQuery.OrderBy(x => x.ModelName);
+                    break;
+                case "ModelDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.ModelName);
+                    break;
+                case "YearASC":
+                    CarQuery = CarQuery.OrderBy(x => x.Year);
+                    break;
+                case "YearDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.Year);
+                    break;
+                case "MilleageASC":
+                    CarQuery = CarQuery.OrderBy(x => x.Milleage);
+                    break;
+                case "MilleageDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.Milleage);
+                    break;
+                case "PurchasePriceASC":
+                    CarQuery = CarQuery.OrderBy(x => x.PurchasePrice);
+                    break;
+                case "PurchasePriceDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.PurchasePrice);
+                    break;
+                case "RepairCostASC":
+                    CarQuery = CarQuery.OrderBy(x => x.RepairCost);
+                    break;
+                case "RepairCostDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.RepairCost);
+                    break;
+                case "SellingPriceASC":
+                    CarQuery = CarQuery.OrderBy(x => x.SellingPrice);
+                    break;
+                case "SellingPriceDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.SellingPrice);
+                    break;
+                case "PurchaseDateASC":
+                    CarQuery = CarQuery.OrderBy(x => x.PurchaseDate);
+                    break;
+                case "PurchaseDateDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.PurchaseDate);
+                    break;
+                case "LotDateASC":
+                    CarQuery = CarQuery.OrderBy(x => x.LotDate);
+                    break;
+                case "LotDateDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.LotDate);
+                    break;
+                case "SaleDateASC":
+                    CarQuery = CarQuery.OrderBy(x => x.SaleDate);
+                    break;
+                case "SaleDateDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.SaleDate);
+                    break;
                 default:
-                    CarQuery = from x in _context.Cars select x;
+                    CarQuery = CarQuery.OrderByDescending(x => x.MakeName);
                     break;
             }
 

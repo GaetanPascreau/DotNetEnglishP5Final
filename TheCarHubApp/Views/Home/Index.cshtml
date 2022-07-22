@@ -25,26 +25,26 @@
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.MakeName)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMakeNameASC"]"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMakeNameDESC"]"><img src="~/Images/down.png" alt="D" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMakeNameASC"]" title="A to Z"><img src="~/Images/up.png" alt="U" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMakeNameDESC"]" title="Z to A"><img src="~/Images/down.png" alt="D" /></a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ModelName)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarModelNameASC"]"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarModelNameDESC"]"><img src="~/Images/down.png" alt="D" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarModelNameASC"]" title="A to Z"><img src="~/Images/up.png" alt="U" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarModelNameDESC"]" title="Z to A"><img src="~/Images/down.png" alt="D" /></a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Trim)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Year)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarYearASC"]"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarYearDESC"]"><img src="~/Images/down.png" alt="D" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarYearASC"]" title="Old to Recent"><img src="~/Images/up.png" alt="U" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarYearDESC"]" title="Recent to Old"><img src="~/Images/down.png" alt="D" /></a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Milleage)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMilleageASC"]"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMilleageDESC"]"><img src="~/Images/down.png" alt="D" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMilleageASC"]" title="Low to High"><img src="~/Images/up.png" alt="U" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMilleageDESC"]" title="High to Low"><img src="~/Images/down.png" alt="D" /></a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Color)
@@ -54,8 +54,8 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SellingPrice)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarPriceASC"]"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarPriceDESC"]"><img src="~/Images/down.png" alt="D" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarPriceASC"]" title="Low to High"><img src="~/Images/up.png" alt="U" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarPriceDESC"]" title="High to Low"><img src="~/Images/down.png" alt="D" /></a>
             </th>
             <th></th>
         </tr>
