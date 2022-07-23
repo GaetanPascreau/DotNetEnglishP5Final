@@ -1,0 +1,73 @@
+﻿body {
+}
+
+.searchbar {
+    display: flex;
+    margin-bottom: 50px;
+}
+
+.search-input {
+    width: 500px;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+}
+
+h4 {
+    color: blue;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.thead-style {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.back-to-top-button {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    background-color: mediumblue;
+    color: white;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+.management-options {
+    display: flex;
+}
+
+.management-options a {
+    text-decoration: none;
+}
+
+.management-options a:hover {
+    color: darkred;
+}
+
+.photoes-gallery {
+    width: 300%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    align-items: flex-end;
+    gap: 10px 30px;
+}
+
+.photo-display {
+    flex: 25%;
+}
+
+.multiline {
+    white-space: pre-wrap;
+}

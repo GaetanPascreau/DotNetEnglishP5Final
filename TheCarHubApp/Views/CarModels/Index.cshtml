@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<div style="display: flex;">
+<div class="management-options">
     <h2><a asp-controller="Cars" asp-action="Index"> Cars Management | </a></h2>
     <h2> Models Management |</h2>
     <h2><a asp-controller="CarMakes" asp-action="Index"> Makes management</a></h2>
@@ -15,9 +15,9 @@
 </p>
 
 <form method="get" asp-action="Index">
-    <div style="display: flex; margin-bottom: 50px;">
+    <div class="searchbar">
         <div class="form-outline">
-            <input type="search" placeholder="Enter Make or Model..." value="@ViewData["FindModel"]" name="ModelSearch" style="width: 500px;" class="form-control" />
+            <input type="search" placeholder="Enter Make or Model" value="@ViewData["FindModel"]" name="ModelSearch" class="form-control search-input" />
         </div>
         <div>
             <input type="submit" value="Search" class="btn btn-primary" /> |
@@ -28,7 +28,7 @@
 </form>
 
 <table class="table">
-    <thead style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+    <thead class="thead-style">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.MakeName)
@@ -63,9 +63,7 @@
     </tbody>
 </table>
 
-<button onclick="topFunction()" id="myBtn" title="Go to top"
-        style="display: none; position: fixed; bottom: 20px; right: 30px; z-index: 99; border: none; outline: none; background-color: mediumblue;
-            color: white; cursor: pointer; padding: 15px; border-radius: 10px; font-size: 18px;">
+<button onclick="topFunction()" id="myBtn" title="Go to top" class="back-to-top-button">
     Top
 </button>
 

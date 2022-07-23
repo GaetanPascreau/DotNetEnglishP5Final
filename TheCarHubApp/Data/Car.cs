@@ -61,6 +61,7 @@ namespace TheCarHubApp.Data
         [Display(Name ="Sale Date")]
         public DateTime? SaleDate { get; set; }
 
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
         [Required(ErrorMessage = "The Milleage is required")]

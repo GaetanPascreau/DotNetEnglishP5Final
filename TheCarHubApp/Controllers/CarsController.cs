@@ -50,6 +50,7 @@ namespace TheCarHubApp.Controllers
 
         /// <summary>
         /// Addition of a research bar on the Home page to search cars by VIN, MakeName, ModelName or Year
+        /// Addition of Sorting options of type ASC/DESC + otpion to filter cars by Sold/Available for sale
         /// </summary>
         /// <param name="CarSearch"></param>
         /// <returns>
@@ -68,12 +69,8 @@ namespace TheCarHubApp.Controllers
             ViewData["CarModelNameDESC"] = "ModelDESC";
             ViewData["CarYearASC"] = "YearASC";
             ViewData["CarYearDESC"] = "YearDESC";
-            ViewData["CarMilleageASC"] = "MilleageASC";
-            ViewData["CarMilleageDESC"] = "MilleageDESC";
             ViewData["PurchasePriceASC"] = "PurchasePriceASC";
             ViewData["PurchasrPiceDESC"] = "PurchasPriceDESC";
-            ViewData["RepairCostASC"] = "RepairCostASC";
-            ViewData["RepairCostDESC"] = "RepairCostDESC";
             ViewData["SellingPriceASC"] = "SellingPriceASC";
             ViewData["SellingPriceDESC"] = "SellingPriceDESC";
             ViewData["PurchaseDateASC"] = "PurchaseDateASC";
@@ -112,23 +109,11 @@ namespace TheCarHubApp.Controllers
                 case "YearDESC":
                     CarQuery = CarQuery.OrderByDescending(x => x.Year);
                     break;
-                case "MilleageASC":
-                    CarQuery = CarQuery.OrderBy(x => x.Milleage);
-                    break;
-                case "MilleageDESC":
-                    CarQuery = CarQuery.OrderByDescending(x => x.Milleage);
-                    break;
                 case "PurchasePriceASC":
                     CarQuery = CarQuery.OrderBy(x => x.PurchasePrice);
                     break;
                 case "PurchasePriceDESC":
                     CarQuery = CarQuery.OrderByDescending(x => x.PurchasePrice);
-                    break;
-                case "RepairCostASC":
-                    CarQuery = CarQuery.OrderBy(x => x.RepairCost);
-                    break;
-                case "RepairCostDESC":
-                    CarQuery = CarQuery.OrderByDescending(x => x.RepairCost);
                     break;
                 case "SellingPriceASC":
                     CarQuery = CarQuery.OrderBy(x => x.SellingPrice);
@@ -155,7 +140,7 @@ namespace TheCarHubApp.Controllers
                     CarQuery = CarQuery.OrderByDescending(x => x.SaleDate);
                     break;
                 default:
-                    CarQuery = CarQuery.OrderByDescending(x => x.MakeName);
+                    CarQuery = CarQuery.OrderByDescending(x => x.LotDate);
                     break;
             }
 

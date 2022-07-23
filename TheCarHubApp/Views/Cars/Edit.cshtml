@@ -61,7 +61,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -104,14 +104,14 @@
                 <span asp-validation-for="SaleDate" class="text-danger"></span>
             </div>
 
-            <div class="gallery" style="width: 300%; display: flex; flex-wrap: wrap; align-content: space-around; align-items: flex-end; gap: 10px 30px;">
+            <div class="gallery photoes-gallery">
                 @if (photoes != null && photoes.Count > 0)
                 {
                     @foreach (var photo in photoes)
                     {
                         photoSource = "~/Images/" + photo.PhotoName;
 
-                        <div style="flex: 25%;">
+                        <div class="photo-display">
                             <div><img src="@photoSource " alt="photo of the car" asp-append-version="true" /></div>
                             <div><button onclick="deletephoto(@photo.Id)" type="button" class="btn btn-danger">Delete Photo</button></div>
                         </div>
@@ -190,8 +190,6 @@
             $('#SellingPrice').val(parseInt(purchasePrice) + parseInt(repairCost) + parseInt(margin));
         }
     });
-
-    //setTimeout("location.reload(true);", 1000);
 </script>
 
 @section Scripts {

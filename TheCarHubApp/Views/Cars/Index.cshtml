@@ -4,10 +4,11 @@
     ViewData["Title"] = "Index";
 }
 
-<div style="display: flex;">
+<div class="management-options">
     <h2>Cars Management | </h2>
     <h2><a asp-controller="CarModels" asp-action="Index"> Models management | </a></h2>
-    <h2><a asp-controller="CarMakes" asp-action="Index"> Makes Management</a></h2>
+    <h2><a asp-controller="CarMakes" asp-action="Index"> Makes Management |</a></h2>
+    <h2><a asp-controller="Home" asp-action="Contact"> Contact Management</a></h2>
 </div>
 
 <p>
@@ -15,9 +16,9 @@
 </p>
 
 <form method="get" asp-action="Index">
-    <div style="display: flex; margin-bottom: 50px;">
+    <div class="searchbar">
         <div class="form-outline">
-            <input type="search" placeholder="Enter VIN, Make, Model or Year..." value="@ViewData["FindCar"]" name="carSearch" style="width: 500px;" class="form-control" />
+            <input type="search" placeholder="Enter VIN, Make, Model or Year" value="@ViewData["FindCar"]" name="carSearch" class="form-control search-input" />
         </div>
         <div>
             <input type="submit" value="Search" class="btn btn-primary" /> |
@@ -28,12 +29,12 @@
 </form>
 
 <table class="table table-striped">
-    <thead style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+    <thead class="thead-style">
         <tr>
             <th>
-                AVAILABILITY
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["SoldCar"]" title="Sold"><img src="~/Images/SoldCars2.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["AvailableCar"]" title="Available"><img src="~/Images/AvailableCars2.png" alt="D" /></a>
+                Status
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["SoldCar"]" title="Sold"><img src="~/Images/SoldCars2.png" alt="OUT" /></a>
+                <a asp-action="Index" asp-route-sortingCars="@ViewData["AvailableCar"]" title="Available"><img src="~/Images/AvailableCars2.png" alt="IN" /></a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.VIN)
@@ -49,23 +50,9 @@
                 <a asp-action="Index" asp-route-sortingCars="@ViewData["CarModelNameDESC"]" title="Z to A"><img src="~/Images/down.png" alt="D" /></a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Trim)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Year)
                 <a asp-action="Index" asp-route-sortingCars="@ViewData["CarYearASC"]" title="old first"><img src="~/Images/up.png" alt="U" /></a>
                 <a asp-action="Index" asp-route-sortingCars="@ViewData["CarYearDESC"]" title="recent first"><img src="~/Images/down.png" alt="D" /></a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Milleage)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMilleageASC"]" title="Low milleage first"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMilleageDESC"]"title="High milleage first"><img src="~/Images/down.png" alt="D" /></a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Color)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PurchaseDate)
@@ -76,14 +63,6 @@
                 @Html.DisplayNameFor(model => model.PurchasePrice)
                 <a asp-action="Index" asp-route-sortingCars="@ViewData["PurchasePriceASC"]" title="Low to High"><img src="~/Images/up.png" alt="U" /></a>
                 <a asp-action="Index" asp-route-sortingCars="@ViewData["PurchasePriceDESC"]" title="High to Low"><img src="~/Images/down.png" alt="D" /></a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Repairs)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RepairCost)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["RepairCostASC"]" title="Low to High"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["RepairCostDESC"]" title="High to Low"><img src="~/Images/down.png" alt="D" /></a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LotDate)
@@ -123,31 +102,13 @@
                     @Html.DisplayFor(modelItem => item.ModelName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Trim)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Year)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Milleage)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Color)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PurchaseDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PurchasePrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Repairs)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RepairCost)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.LotDate)
@@ -168,9 +129,7 @@
     </tbody>
 </table>
 
-<button onclick="topFunction()" id="myBtn" title="Go to top"
-        style="display: none; position: fixed; bottom: 20px; right: 30px; z-index: 99; border: none; outline: none; background-color: mediumblue;
-            color: white; cursor: pointer; padding: 15px; border-radius: 10px; font-size: 18px;">
+<button onclick="topFunction()" id="myBtn" title="Go to top" class="back-to-top-button">
     Top
 </button>
 
