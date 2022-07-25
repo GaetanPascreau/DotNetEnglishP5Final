@@ -1,0 +1,70 @@
+﻿@model TheCarHubApp.Data.ContactInfo
+@{
+    ViewData["Title"] = "Contact Us";
+    var MyKey = ViewData["API_KEY"];
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="ContactInfos">
+            <div>
+                <strong>CONTACT INFORMATION:</strong>
+                <hr />
+                <strong>Address: </strong>
+                <address>
+                    @Html.DisplayFor(model => model.AddressLine1)<br />
+                    @Html.DisplayFor(model => model.AddressLine2)<br />
+                    @Html.DisplayFor(model => model.City), @Html.DisplayFor(model => model.State) @Html.DisplayFor(model => model.Zip)<br />
+                </address>
+
+                <p>
+                    <strong>Email:</strong> <a href="mailto:Contact@TheCarHub.com">@Html.DisplayFor(model => model.Email)</a><br />
+                </p>
+
+                <p>
+                    <strong>Phone:</strong> @Html.DisplayFor(model => model.Phone)
+                </p>
+            </div>
+
+            <div>
+                <strong>HOURS OF OPERATION</strong>
+                <hr />
+                <table>
+                    <tr>
+                        <td class="OperationDay">Mon-Fri</td>
+                        <td class="OperationHour">@Html.DisplayFor(model => model.WeekDayOpeningHour) AM - @Html.DisplayFor(model => model.WeekDayClosingHour) PM</td>
+                    </tr>
+                    <tr>
+                        <td class="OperationDay">Sat</td>
+                        <td class="OperationHour">@Html.DisplayFor(model => model.SaturdarOpeningHour) AM - @Html.DisplayFor(model => model.SaturdayClosingHour) PM</td>
+                    </tr>
+                    <tr>
+                        <td class="OperationDay">Sun</td>
+                        <td class="OperationHour">Closed</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div id="map" class="MapDimensions"></div>
+        <script>
+            var map;
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: { lat: @Html.DisplayFor(model => model.MapLat), lng: @Html.DisplayFor(model => model.MapLong) },
+                    zoom: @Html.DisplayFor(model => model.MapZoom)
+                });
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(@Html.DisplayFor(model => model.MapLat), @Html.DisplayFor(model => model.MapLong)),
+                    map: map,
+                    title: "@Html.DisplayFor(model => model.MapTitle)"
+                });
+            }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=@(MyKey)&callback=initMap" async defer></script>
+    </div>
+</div>

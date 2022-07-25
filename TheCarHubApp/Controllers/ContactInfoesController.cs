@@ -11,60 +11,22 @@ using TheCarHubApp.Data;
 namespace TheCarHubApp.Controllers
 {
     [Authorize(Roles = "Administrator")]
-    public class CarMakesController : Controller
+    public class ContactInfoesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public CarMakesController(ApplicationDbContext context)
+        public ContactInfoesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: CarMakes
+        // GET: ContactInfoes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.CarMakes.ToListAsync());
+            return View(await _context.ContactInfos.ToListAsync());
         }
 
-        /// <summary>
-        /// Addition of a research bar on the Index page to search CarMakes by MakeName + sorting options to display Makes list
-        /// </summary>
-        /// <param name="MakeSearch"></param>
-        /// <returns>
-        /// The CarMakes/Index view with the result of the Make search or the sorted list of Makes
-        /// </returns>
-        [HttpGet]
-        public async Task<IActionResult> Index(string MakeSearch, string sortingMakes)
-        {
-            ViewData["FindMake"] = MakeSearch;
-
-            ViewData["CarMakeNameASC"] = "MakeASC";
-            ViewData["CarMakeNameDESC"] = "MakeDESC";
-
-            var MakeQuery = from x in _context.CarMakes select x;
-
-            switch (sortingMakes)
-            {
-                case "MakeASC":
-                    MakeQuery = MakeQuery.OrderBy(x => x.MakeName);
-                    break;
-                case "MakeDESC":
-                    MakeQuery = MakeQuery.OrderByDescending(x => x.MakeName);
-                    break;
-                default:
-                    MakeQuery = MakeQuery.OrderByDescending(x => x.MakeName);
-                    break;
-            }
-
-            if (!string.IsNullOrEmpty(MakeSearch))
-            {
-                MakeQuery = MakeQuery.Where(x => x.MakeName.Contains(MakeSearch));
-            }
-            return View(await MakeQuery.AsNoTracking().ToListAsync());
-        }
-
-
-        // GET: CarMakes/Details/5
+        // GET: ContactInfoes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -72,39 +34,39 @@ namespace TheCarHubApp.Controllers
                 return NotFound();
             }
 
-            var carMake = await _context.CarMakes
+            var contactInfo = await _context.ContactInfos
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (carMake == null)
+            if (contactInfo == null)
             {
                 return NotFound();
             }
 
-            return View(carMake);
+            return View(contactInfo);
         }
 
-        // GET: CarMakes/Create
+        // GET: ContactInfoes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: CarMakes/Create
+        // POST: ContactInfoes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MakeName")] CarMake carMake)
+        public async Task<IActionResult> Create([Bind("Id,AddressLine1,AddressLine2,Zip,State,City,Email,Phone,WeekDayOpeningHour,WeekDayClosingHour,SaturdarOpeningHour,SaturdayClosingHour,MapLat,MapLong,MapZoom,MapTitle")] ContactInfo contactInfo)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(carMake);
+                _context.Add(contactInfo);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(carMake);
+            return View(contactInfo);
         }
 
-        // GET: CarMakes/Edit/5
+        // GET: ContactInfoes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -112,22 +74,22 @@ namespace TheCarHubApp.Controllers
                 return NotFound();
             }
 
-            var carMake = await _context.CarMakes.FindAsync(id);
-            if (carMake == null)
+            var contactInfo = await _context.ContactInfos.FindAsync(id);
+            if (contactInfo == null)
             {
                 return NotFound();
             }
-            return View(carMake);
+            return View(contactInfo);
         }
 
-        // POST: CarMakes/Edit/5
+        // POST: ContactInfoes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MakeName")] CarMake carMake)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,AddressLine1,AddressLine2,Zip,State,City,Email,Phone,WeekDayOpeningHour,WeekDayClosingHour,SaturdarOpeningHour,SaturdayClosingHour,MapLat,MapLong,MapZoom,MapTitle")] ContactInfo contactInfo)
         {
-            if (id != carMake.Id)
+            if (id != contactInfo.Id)
             {
                 return NotFound();
             }
@@ -136,12 +98,12 @@ namespace TheCarHubApp.Controllers
             {
                 try
                 {
-                    _context.Update(carMake);
+                    _context.Update(contactInfo);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CarMakeExists(carMake.Id))
+                    if (!ContactInfoExists(contactInfo.Id))
                     {
                         return NotFound();
                     }
@@ -152,10 +114,10 @@ namespace TheCarHubApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(carMake);
+            return View(contactInfo);
         }
 
-        // GET: CarMakes/Delete/5
+        // GET: ContactInfoes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -163,30 +125,30 @@ namespace TheCarHubApp.Controllers
                 return NotFound();
             }
 
-            var carMake = await _context.CarMakes
+            var contactInfo = await _context.ContactInfos
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (carMake == null)
+            if (contactInfo == null)
             {
                 return NotFound();
             }
 
-            return View(carMake);
+            return View(contactInfo);
         }
 
-        // POST: CarMakes/Delete/5
+        // POST: ContactInfoes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var carMake = await _context.CarMakes.FindAsync(id);
-            _context.CarMakes.Remove(carMake);
+            var contactInfo = await _context.ContactInfos.FindAsync(id);
+            _context.ContactInfos.Remove(contactInfo);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CarMakeExists(int id)
+        private bool ContactInfoExists(int id)
         {
-            return _context.CarMakes.Any(e => e.Id == id);
+            return _context.ContactInfos.Any(e => e.Id == id);
         }
     }
 }

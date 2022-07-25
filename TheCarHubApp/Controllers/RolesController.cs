@@ -25,7 +25,7 @@ namespace TheCarHubApp.Controllers
             return View(roles);
         }
 
-        [Authorize(Roles ="Administrator")]
+        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public IActionResult CreateRole()
         {

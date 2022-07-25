@@ -1,21 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using TheCarHubApp.Data;
 using TheCarHubApp.Models;
 
 namespace TheCarHubApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context, IWebHostEnvironment hostingEnvironment)
         {
-            _logger = logger;
+            _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public IActionResult Index()
@@ -26,6 +31,13 @@ namespace TheCarHubApp.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public async Task<IActionResult> Contact()
+        {
+            ViewData["API_KEY"] = "AIzaSyBfVYH1kT7ouXSc1BOeCwiDrZ2kagqyuyE";
+            var model = await _context.ContactInfos.FirstOrDefaultAsync();
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

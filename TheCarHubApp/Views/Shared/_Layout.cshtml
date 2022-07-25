@@ -6,11 +6,18 @@
     <title>@ViewData["Title"] - TheCarHubApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link  rel="stylesheet" href="~/css/lightbox.min.css"/>
+    <link rel="stylesheet" href="~/css/ContactStyle.css" />
+    <link rel="stylesheet" href="~/css/lightbox.min.css" />
+    <link href="~/css/MyStyle.css" rel="stylesheet" />
     <script src="~/js/lightbox-plus-jquery.min.js"></script>
 </head>
 <body>
     <header>
+        @using Microsoft.AspNetCore.Identity
+        @using TheCarHubApp.Areas.Identity.Data
+        @inject SignInManager<TheCarHubAppUser> SignInManager
+        @inject UserManager<TheCarHubAppUser> UserManager
+
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TheCarHubApp</a>
@@ -24,8 +31,18 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cars" asp-action="Index">Admin</a>
+                            </li>
+                        }
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -43,6 +60,7 @@
             &copy; 2022 - TheCarHubApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

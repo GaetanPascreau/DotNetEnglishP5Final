@@ -17,11 +17,11 @@ namespace TheCarHubApp.Data
         [ForeignKey("FK_Car")]
         public int CarId { get; set; }
 
-        [Column(TypeName ="nvarchar(50)")]
+        [Column(TypeName = "nvarchar(50)")]
         [DisplayName("Photo Title")]
         public string PhotoTitle { get; set; }
 
-        [Column(TypeName ="nvarchar(100)")]
+        [Column(TypeName = "nvarchar(100)")]
         [DisplayName("Photo Name")]
         public string PhotoName { get; set; }
 

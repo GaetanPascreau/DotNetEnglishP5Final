@@ -4,38 +4,89 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="management-options">
+    <h2><a asp-controller="Cars" asp-action="Index"> Cars Management | </a></h2>
+    <h2> Models Management |</h2>
+    <h2><a asp-controller="CarMakes" asp-action="Index"> Makes management |</a></h2>
+    <h2><a asp-controller="ContactInfoes" asp-action="Index"> Contact Management</a></h2>
+</div>
 
 <p>
-    <a asp-action="Create">Create New Model</a>
+    <a asp-action="Create">Add a New Model</a>
 </p>
+
+<form method="get" asp-action="Index">
+    <div class="searchbar">
+        <div class="form-outline">
+            <input type="search" placeholder="Enter Make or Model" value="@ViewData["FindModel"]" name="ModelSearch" class="form-control search-input" />
+        </div>
+        <div>
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-action="Index">Get All Models</a>
+        </div>
+    </div>
+
+</form>
+
 <table class="table">
-    <thead>
+    <thead class="thead-style">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.MakeName)
+                <a asp-action="Index" asp-route-sortingModels="@ViewData["CarMakeNameASC"]"><img src="~/Images/up.png" alt="U" /></a>
+                <a asp-action="Index" asp-route-sortingModels="@ViewData["CarMakeNameDESC"]"><img src="~/Images/down.png" alt="D" /></a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ModelName)
+                <a asp-action="Index" asp-route-sortingModels="@ViewData["CarModelNameASC"]"><img src="~/Images/up.png" alt="U" /></a>
+                <a asp-action="Index" asp-route-sortingModels="@ViewData["CarModelNameDESC"]"><img src="~/Images/down.png" alt="D" /></a>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MakeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModelName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MakeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ModelName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<button onclick="topFunction()" id="myBtn" title="Go to top" class="back-to-top-button">
+    Top
+</button>
+
+
+<script>
+    //Get the button:
+    mybutton = document.getElementById("myBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function () { scrollFunction() };
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>

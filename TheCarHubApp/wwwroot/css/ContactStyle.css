@@ -1,0 +1,23 @@
+﻿body {
+}
+
+.ContactInfos {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 500px;
+    width: 500px;
+}
+
+.OperationDay {
+    width: 100px;
+}
+
+.OperationHour {
+    text-align: end;
+}
+
+.MapDimensions {
+    height: 500px;
+    width: 500px;
+}

@@ -27,7 +27,7 @@ namespace TheCarHubApp.Data
         public string VIN { get; set; }
 
         [Required(ErrorMessage = "The Year is required")]
-        [Range(1990,2022)]
+        [Range(1990, 2022)]
         public int Year { get; set; }
 
         [Required(ErrorMessage = "The Trim is required")]
@@ -58,9 +58,10 @@ namespace TheCarHubApp.Data
         public double SellingPrice { get; set; }
 
         [DataType(DataType.Date)]
-        [Display(Name ="Sale Date")]
+        [Display(Name = "Sale Date")]
         public DateTime? SaleDate { get; set; }
 
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
         [Required(ErrorMessage = "The Milleage is required")]
@@ -73,7 +74,9 @@ namespace TheCarHubApp.Data
         public string MakeName { get; set; }
 
         [Display(Name = "Model")]
-        public string ModelName { get; set; 
+        public string ModelName
+        {
+            get; set;
         }
         [NotMapped]
         [Display(Name = "Add Car Photoes")]
