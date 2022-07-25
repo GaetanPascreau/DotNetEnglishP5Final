@@ -120,10 +120,11 @@ namespace TheCarHubApp.Controllers
             return View();
         }
 
-        public IActionResult Contact()
+        public async Task<IActionResult> Contact()
         {
             ViewData["API_KEY"] = "AIzaSyBfVYH1kT7ouXSc1BOeCwiDrZ2kagqyuyE";
-            return View();
+            var model = await _context.ContactInfos.FirstOrDefaultAsync();
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

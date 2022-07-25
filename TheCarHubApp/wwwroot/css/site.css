@@ -106,7 +106,7 @@ body {
     transform: scale(1.1);
 }
 
-/* display Cars in a table with fixed headers (works in Firefox and Edge, not in Chrome)*/
+/* display Cars in a table with fixed headers */
 table thead tr th {
     background-color: white;
     position: sticky;

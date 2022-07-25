@@ -70,7 +70,7 @@ namespace TheCarHubApp.Controllers
             ViewData["CarYearASC"] = "YearASC";
             ViewData["CarYearDESC"] = "YearDESC";
             ViewData["PurchasePriceASC"] = "PurchasePriceASC";
-            ViewData["PurchasrPiceDESC"] = "PurchasPriceDESC";
+            ViewData["PurchasePriceDESC"] = "PurchasePriceDESC";
             ViewData["SellingPriceASC"] = "SellingPriceASC";
             ViewData["SellingPriceDESC"] = "SellingPriceDESC";
             ViewData["PurchaseDateASC"] = "PurchaseDateASC";

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TheCarHubApp.Data;
 
 namespace TheCarHubApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220723135317_AddingContactInfoTable")]
+    partial class AddingContactInfoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -378,13 +380,11 @@ namespace TheCarHubApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MapLat")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("MapLat")
+                        .HasColumnType("float");
 
-                    b.Property<string>("MapLong")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("MapLong")
+                        .HasColumnType("float");
 
                     b.Property<string>("MapTitle")
                         .IsRequired()
@@ -397,26 +397,29 @@ namespace TheCarHubApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("SaturdarOpeningHour")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("SaturdarOpeningHour")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("SaturdayClosingHour")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("SaturdayClosingHour")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("WeekDayClosingHour")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("WeekDayOpeningHour")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Zip")
+                    b.Property<string>("WeekDayClosingHour")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WeekDayOpeningHour")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Zip")
                         .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
