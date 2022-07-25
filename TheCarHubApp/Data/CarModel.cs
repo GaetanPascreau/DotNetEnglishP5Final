@@ -11,8 +11,15 @@ namespace TheCarHubApp.Data
     {
         [Key]
         public int Id { get; set; }
+
         [ForeignKey("FK_CarMake")]
         public int? CarMakeId { get; set; }
+
+        [Required(ErrorMessage = "The Model is required")]
+        [Display(Name = "Model")]
         public string ModelName { get; set; }
+
+        [Display(Name = "Make")]
+        public string MakeName { get; set; }
     }
 }

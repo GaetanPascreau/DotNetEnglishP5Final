@@ -10,8 +10,12 @@ namespace TheCarHubApp.Data
     {
         [Key]
         public int Id { get; set; }
+
+        [Display(Name = "Make")]
         public string MakeName { get; set; }
+
         public List<Car> Cars { get; set; }
+
         public List<CarModel> CarModels { get; set; }
     }
 }
