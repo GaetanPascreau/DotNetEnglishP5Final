@@ -16,7 +16,6 @@ using TheCarHubApp.ViewModels;
 
 namespace TheCarHubApp.Controllers
 {
-    [Authorize(Roles = "Administrator")]
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -186,6 +185,7 @@ namespace TheCarHubApp.Controllers
         /// <returns>
         /// The Cars/Create view with the form to complete.
         /// </returns>
+       [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             // Populate the 1st Select options, for Car Makes
@@ -212,6 +212,7 @@ namespace TheCarHubApp.Controllers
         /// </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create([Bind("CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName,Photos")] CarCreateViewModel model)
         {
             if (ModelState.IsValid)
@@ -292,6 +293,7 @@ namespace TheCarHubApp.Controllers
         /// <returns>
         /// The Cars/Edit/id view with the form to Edit the selected car.
         /// </returns>
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -341,6 +343,7 @@ namespace TheCarHubApp.Controllers
         /// </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CarMakeId,CarModelId,VIN,Year,Trim,PurchaseDate,PurchasePrice,Repairs,RepairCost,LotDate,SellingPrice,SaleDate,Description,Milleage,Color,MakeName,ModelName,PhotoPath,CarPhotoes")] Car car)
         {
             if (id != car.Id)
@@ -437,6 +440,7 @@ namespace TheCarHubApp.Controllers
         /// <returns>
         /// The Cars/Delete view with all car information from the specified car.
         /// </returns>
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -467,6 +471,7 @@ namespace TheCarHubApp.Controllers
         /// </returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             // Get the car with specified Id from the database
@@ -507,6 +512,7 @@ namespace TheCarHubApp.Controllers
         /// To the Cars/Edit view for the selected car => stay on the page until the form is saved.
         /// </returns>
         [HttpPost, ActionName("DeletePhoto")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeletePhoto(int id)
         {
             // Get the photo object associated with the Id from the parameters
