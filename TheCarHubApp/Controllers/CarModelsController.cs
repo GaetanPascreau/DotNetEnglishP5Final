@@ -154,8 +154,6 @@ namespace TheCarHubApp.Controllers
                 return NotFound();
             }
 
-            //carModel.MakeName = _context.CarMakes.Where(x => x.Id == carModel.CarMakeId).Select(y => y.MakeName).FirstOrDefault();
-
             return View(carModel);
         }
 

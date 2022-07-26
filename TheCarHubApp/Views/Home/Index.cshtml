@@ -7,9 +7,38 @@
 <h1 class="main-title">Welcome to The Car Hub !</h1>
 <h4 class="secondary-title">Here is an overview of the cars available for sale</h4>
 
+@* Carousel to display latest cars for sale *@
+<div id="carouselExampleIndicators" class="carousel slide w-50 center" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img class="d-block w-100" src="~/Images/04f2a651-ae40-45e8-bdea-ebec6e082bfa_Buick_Lacrosse_1.jpg" alt="First slide">
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100" src="~/Images/46487d58-2432-4fe3-b362-92fc9226a24c_Tesla_ModelS_1.jpg" alt="Second slide">
+        </div>
+        <div class="carousel-item">
+            <img class="d-block w-100" src="~/Images/e5675648-b557-41f7-99f1-2e43e45269f9_Chevrolet_Corvette_Stingray_3.jpg" alt="Third slide">
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+@* Searchbar *@
 <form method="get" asp-action="Index">
     <div class="searchbar">
-        <div class="form-outline">
+        <div class="form-outline center">
             <input type="search" placeholder="Enter Make, Model or Year" value="@ViewData["FindCar"]" name="carSearch" class="form-control search-input" />
         </div>
         <div>

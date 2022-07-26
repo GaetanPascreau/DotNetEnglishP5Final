@@ -61,6 +61,8 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
+/*  background-image: url('../Images/road-background4.jpg');
+  background-repeat: no-repeat;*/
 }
 .footer {
   position: absolute;
@@ -122,4 +124,10 @@ table thead tr th {
     cursor: pointer;
     filter: opacity(100);
     opacity: 1;
+}
+
+#carouselExampleIndicators {
+    display: block;
+    margin-left: auto;
+    margin-right: auto
 }
