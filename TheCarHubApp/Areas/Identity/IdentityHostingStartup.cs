@@ -18,9 +18,10 @@ namespace TheCarHubApp.Areas.Identity
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<TheCarHubAppContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("TheCarHubAppContextConnection")));
+                        //context.Configuration.GetConnectionString("TheCarHubAppContextConnection")));
+                        context.Configuration.GetConnectionString("AzureConnection2")));
 
-                services.AddDefaultIdentity<TheCarHubAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<TheCarHubAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<TheCarHubAppContext>();
             });

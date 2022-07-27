@@ -4,11 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="management-options">
+    <h2><a asp-controller="Cars" asp-action="Index"> Cars Management | </a></h2>
+    <h2><a asp-controller="CarModels" asp-action="Index"> Models management | </a></h2>
+    <h2><a asp-controller="CarMakes" asp-action="Index"> Makes Management |</a></h2>
+    <h2>Contact Management</h2>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -110,8 +112,7 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
             </td>
         </tr>
 }
