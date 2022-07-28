@@ -7,6 +7,14 @@
     "mssql2": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:TheCarHubAppContextConnection"
+    },
+    "mssql3": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:AzureConnection"
+    },
+    "mssql4": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:AzureConnection2"
     }
   }
 }
