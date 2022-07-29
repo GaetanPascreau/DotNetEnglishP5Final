@@ -93,7 +93,7 @@ namespace TheCarHubApp.Controllers
                 if (!string.IsNullOrEmpty(CarSearch))
                 {
                     CarSearch = CarSearch.Trim();
-                    CarQuery = CarQuery.Where(x => x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
+                    CarQuery = CarQuery.Where(x => x.VIN.Contains(CarSearch) || x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
                     CarQuery = SortList(CarQuery, sortingCars);
                 }
                 else
@@ -107,7 +107,7 @@ namespace TheCarHubApp.Controllers
                 if (!string.IsNullOrEmpty(CarSearch))
                 {
                     CarSearch = CarSearch.Trim();
-                    CarQuery = CarQuery.Where(x => x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
+                    CarQuery = CarQuery.Where(x => x.VIN.Contains(CarSearch) ||  x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
                 }
             }
             return View(await CarQuery.AsNoTracking().ToListAsync());
