@@ -59,7 +59,13 @@ namespace TheCarHubApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string CarSearch, string sortingCars)
         {
-            ViewData["FindCar"] = CarSearch;
+
+            if (CarSearch != null)
+            {
+                CarSearch = CarSearch.Trim();
+                ViewData["FindCar"] = CarSearch;
+                ViewBag.carSearch = CarSearch;
+            }
 
             ViewData["SoldCar"] = "SoldCar";
             ViewData["AvailableCar"] = "AvailableCar";
@@ -82,83 +88,39 @@ namespace TheCarHubApp.Controllers
 
             var CarQuery = from x in _context.Cars select x;
 
-            // sort cars by their characteristics (Make, Model, Year, Sale price...)
-            switch(sortingCars)
+            if (!string.IsNullOrEmpty(sortingCars))
             {
-                case "SoldCar":
-                    CarQuery = CarQuery.Where(c => c.SaleDate != null);
-                    break;
-                case "AvailableCar":
-                    CarQuery = CarQuery.Where(c => c.SaleDate == null);
-                    break;
-                case "MakeASC":
-                    CarQuery = CarQuery.OrderBy(x => x.MakeName);
-                    break;
-                case "MakeDESC":
-                    CarQuery = CarQuery.OrderByDescending(x => x.MakeName);
-                    break;
-                case "ModelASC":
-                    CarQuery = CarQuery.OrderBy(x => x.ModelName);
-                    break;
-                case "ModelDESC":
-                    CarQuery = CarQuery.OrderByDescending(x => x.ModelName);
-                    break;
-                case "YearASC":
-                    CarQuery = CarQuery.OrderBy(x => x.Year);
-                    break;
-                case "YearDESC":
-                    CarQuery = CarQuery.OrderByDescending(x => x.Year);
-                    break;
-                case "PurchasePriceASC":
-                    CarQuery = CarQuery.OrderBy(x => x.PurchasePrice);
-                    break;
-                case "PurchasePriceDESC":
-                    CarQuery = CarQuery.OrderByDescending(x => x.PurchasePrice);
-                    break;
-                case "SellingPriceASC":
-                    CarQuery = CarQuery.OrderBy(x => x.SellingPrice);
-                    break;
-                case "SellingPriceDESC":
-                    CarQuery = CarQuery.OrderByDescending(x => x.SellingPrice);
-                    break;
-                case "PurchaseDateASC":
-                    CarQuery = CarQuery.OrderBy(x => x.PurchaseDate);
-                    break;
-                case "PurchaseDateDESC":
-                    CarQuery = CarQuery.OrderByDescending(x => x.PurchaseDate);
-                    break;
-                case "LotDateASC":
-                    CarQuery = CarQuery.OrderBy(x => x.LotDate);
-                    break;
-                case "LotDateDESC":
-                    CarQuery = CarQuery.OrderByDescending(x => x.LotDate);
-                    break;
-                case "SaleDateASC":
-                    CarQuery = CarQuery.OrderBy(x => x.SaleDate);
-                    break;
-                case "SaleDateDESC":
-                    CarQuery = CarQuery.OrderByDescending(x => x.SaleDate);
-                    break;
-                default:
-                    CarQuery = CarQuery.OrderByDescending(x => x.LotDate);
-                    break;
-            }
+                if (!string.IsNullOrEmpty(CarSearch))
+                {
+                    CarSearch = CarSearch.Trim();
+                    CarQuery = CarQuery.Where(x => x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
+                    CarQuery = SortList(CarQuery, sortingCars);
+                }
+                else
+                {
+                    CarQuery = SortList(CarQuery, sortingCars);
+                }
 
-            if (!string.IsNullOrEmpty(CarSearch))
+            }
+            else
             {
-                CarQuery = CarQuery.Where(x => x.VIN.Contains(CarSearch) || x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
+                if (!string.IsNullOrEmpty(CarSearch))
+                {
+                    CarSearch = CarSearch.Trim();
+                    CarQuery = CarQuery.Where(x => x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
+                }
             }
             return View(await CarQuery.AsNoTracking().ToListAsync());
         }
 
-            /// <summary>
-            /// GET: Cars/Details/5 => Display details for the car with the specified Id.
-            /// </summary>
-            /// <param name="id"></param>
-            /// <returns>
-            /// The Cars/Detail/id view with the details for the specified car.
-            /// </returns>
-            public async Task<IActionResult> Details(int? id)
+        /// <summary>
+        /// GET: Cars/Details/5 => Display details for the car with the specified Id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// The Cars/Detail/id view with the details for the specified car.
+        /// </returns>
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -375,9 +337,9 @@ namespace TheCarHubApp.Controllers
                             var LastphotoNumber = lastPhotoTitle.Substring(lastPhotoTitle.IndexOf("-") + 1);
 
                             // Increment that number to name the newly uploaded photo
-                            nextphotoNumber = Convert.ToInt32(LastphotoNumber) + 1; 
+                            nextphotoNumber = Convert.ToInt32(LastphotoNumber) + 1;
                         }
-                        else 
+                        else
                         {
                             // If there was no photo previously associated to that car
                             nextphotoNumber = 1;
@@ -529,7 +491,7 @@ namespace TheCarHubApp.Controllers
 
             return RedirectToAction("Edit", new { id = carID });
         }
-         
+
 
         private bool CarExists(int id)
         {
@@ -571,6 +533,72 @@ namespace TheCarHubApp.Controllers
                 YearList.Add(new SelectListItem() { Value = i.ToString(), Text = i.ToString() });
             }
             return YearList;
+        }
+
+        public IQueryable<Car> SortList(IQueryable<Car> CarQuery, string sortingCars)
+        {
+            // sort cars by their characteristics (Make, Model, Year, Sale price...)
+            switch (sortingCars)
+            {
+                case "SoldCar":
+                    CarQuery = CarQuery.Where(c => c.SaleDate != null);
+                    break;
+                case "AvailableCar":
+                    CarQuery = CarQuery.Where(c => c.SaleDate == null);
+                    break;
+                case "MakeASC":
+                    CarQuery = CarQuery.OrderBy(x => x.MakeName);
+                    break;
+                case "MakeDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.MakeName);
+                    break;
+                case "ModelASC":
+                    CarQuery = CarQuery.OrderBy(x => x.ModelName);
+                    break;
+                case "ModelDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.ModelName);
+                    break;
+                case "YearASC":
+                    CarQuery = CarQuery.OrderBy(x => x.Year);
+                    break;
+                case "YearDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.Year);
+                    break;
+                case "PurchasePriceASC":
+                    CarQuery = CarQuery.OrderBy(x => x.PurchasePrice);
+                    break;
+                case "PurchasePriceDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.PurchasePrice);
+                    break;
+                case "SellingPriceASC":
+                    CarQuery = CarQuery.OrderBy(x => x.SellingPrice);
+                    break;
+                case "SellingPriceDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.SellingPrice);
+                    break;
+                case "PurchaseDateASC":
+                    CarQuery = CarQuery.OrderBy(x => x.PurchaseDate);
+                    break;
+                case "PurchaseDateDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.PurchaseDate);
+                    break;
+                case "LotDateASC":
+                    CarQuery = CarQuery.OrderBy(x => x.LotDate);
+                    break;
+                case "LotDateDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.LotDate);
+                    break;
+                case "SaleDateASC":
+                    CarQuery = CarQuery.OrderBy(x => x.SaleDate);
+                    break;
+                case "SaleDateDESC":
+                    CarQuery = CarQuery.OrderByDescending(x => x.SaleDate);
+                    break;
+                default:
+                    CarQuery = CarQuery.OrderByDescending(x => x.LotDate);
+                    break;
+            }
+            return CarQuery;
         }
     }
 }

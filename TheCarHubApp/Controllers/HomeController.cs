@@ -68,13 +68,14 @@ namespace TheCarHubApp.Controllers
             ViewData["CarPriceASC"] = "PriceASC";
             ViewData["CarPriceDESC"] = "PriceDESC";
 
-            //var CarQuery = _context.Cars.Where(c => c.SaleDate == null);
-            var CarQuery = from c in _context.Cars where c.SaleDate == null select c;
+            var CarQuery = _context.Cars.Where(c => c.SaleDate == null);
+            //var CarQuery = from c in _context.Cars where c.SaleDate == null select c;
 
             if (!string.IsNullOrEmpty(sortingCars))
             {
                 if (!string.IsNullOrEmpty(CarSearch))
                 {
+                    CarSearch = CarSearch.Trim();
                     CarQuery = CarQuery.Where(x => x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
                     CarQuery = SortList(CarQuery, sortingCars);
                 }
@@ -88,6 +89,7 @@ namespace TheCarHubApp.Controllers
             {
                 if (!string.IsNullOrEmpty(CarSearch))
                 {
+                    CarSearch = CarSearch.Trim();
                     CarQuery = CarQuery.Where(x => x.MakeName.Contains(CarSearch) || x.ModelName.Contains(CarSearch) || x.Year.ToString().Equals(CarSearch));
                 }
             }
