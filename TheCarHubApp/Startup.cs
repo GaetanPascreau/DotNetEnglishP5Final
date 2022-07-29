@@ -49,8 +49,8 @@ namespace TheCarHubApp
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-            Configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging());
-            //Configuration.GetConnectionString("AzureConnection")).EnableSensitiveDataLogging());
+            //Configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging());
+            Configuration.GetConnectionString("AzureConnection")).EnableSensitiveDataLogging());
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             //Use Configuration from IdentityHostingStartup.cs instead
