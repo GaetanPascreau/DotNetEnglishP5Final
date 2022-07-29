@@ -49,7 +49,13 @@ namespace TheCarHubApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string CarSearch, string sortingCars)
         {
-            ViewData["FindCar"] = CarSearch;
+            if(CarSearch != null)
+            {
+                CarSearch = CarSearch.Trim();
+                ViewData["FindCar"] = CarSearch;
+                ViewBag.carSearch = CarSearch;
+            }
+
 
             ViewData["CarMakeNameASC"] = "MakeASC";
             ViewData["CarMakeNameDESC"] = "MakeDESC";
@@ -62,7 +68,8 @@ namespace TheCarHubApp.Controllers
             ViewData["CarPriceASC"] = "PriceASC";
             ViewData["CarPriceDESC"] = "PriceDESC";
 
-            var CarQuery = _context.Cars.Where(c => c.SaleDate == null);
+            //var CarQuery = _context.Cars.Where(c => c.SaleDate == null);
+            var CarQuery = from c in _context.Cars where c.SaleDate == null select c;
 
             if (!string.IsNullOrEmpty(sortingCars))
             {
@@ -139,6 +146,7 @@ namespace TheCarHubApp.Controllers
             {
                 case "MakeASC":
                     CarQuery = CarQuery.OrderBy(x => x.MakeName);
+                    //CarQuery = from c in CarQuery where c.SaleDate == null orderby c.MakeName ascending select c;
                     break;
                 case "MakeDESC":
                     CarQuery = CarQuery.OrderByDescending(x => x.MakeName);

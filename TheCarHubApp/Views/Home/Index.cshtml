@@ -39,95 +39,108 @@
 <form method="get" asp-action="Index">
     <div class="searchbar">
         <div class="form-outline center">
-            <input type="search" placeholder="Enter Make, Model or Year" value="@ViewData["FindCar"]" name="carSearch" class="form-control search-input" />
+            <input type="search" placeholder="Enter Make, Model or Year" value="@ViewData["FindCar"]" name="carSearch" class="form-control search-input" id="SearchCar" />
         </div>
+        <input type="hidden" name="carSearch" value="@ViewBag.carSearch" />
         <div>
             <input type="submit" value="Search" class="btn btn-primary" /> |
             <a asp-action="Index">Get All Cars</a>
         </div>
     </div>
 </form>
+<form method="get">
+    <input type="hidden" name="carSearch" value="@ViewBag.carSearch" />
+    <table class="table table-striped">
+        <thead class="thead-style">
 
-<table class="table table-striped">
-    <thead class="thead-style">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MakeName)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMakeNameASC"]" title="A to Z"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMakeNameDESC"]" title="Z to A"><img src="~/Images/down.png" alt="D" /></a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModelName)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarModelNameASC"]" title="A to Z"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarModelNameDESC"]" title="Z to A"><img src="~/Images/down.png" alt="D" /></a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Trim)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Year)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarYearASC"]" title="Old to Recent"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarYearDESC"]" title="Recent to Old"><img src="~/Images/down.png" alt="D" /></a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Milleage)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMilleageASC"]" title="Low to High"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarMilleageDESC"]" title="High to Low"><img src="~/Images/down.png" alt="D" /></a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Color)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SellingPrice)
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarPriceASC"]" title="Low to High"><img src="~/Images/up.png" alt="U" /></a>
-                <a asp-action="Index" asp-route-sortingCars="@ViewData["CarPriceDESC"]" title="High to Low"><img src="~/Images/down.png" alt="D" /></a>
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            if (item.SaleDate == null)
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.MakeName)
+                   
+                    <a asp-action="Index" asp-route-carSearch="@ViewBag.carSearch" asp-route-sortingCars="@ViewData["CarMakeNameASC"]" title="A to Z"><img src="~/Images/up.png" alt="U" /></a>
+                    <a asp-action="Index" asp-route-carSearch="@ViewBag.carSearch"  asp-route-sortingCars="@ViewData["CarMakeNameDESC"]" title="Z to A"><img src="~/Images/down.png" alt="D" /></a>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ModelName)
+                    <a asp-action="Index" asp-route-carSearch="@ViewBag.carSearch"  asp-route-sortingCars="@ViewData["CarModelNameASC"]" title="A to Z"><img src="~/Images/up.png" alt="U" /></a>
+                    <a asp-action="Index" asp-route-carSearch="@ViewBag.carSearch"  asp-route-sortingCars="@ViewData["CarModelNameDESC"]" title="Z to A"><img src="~/Images/down.png" alt="D" /></a>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Trim)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Year)
+                    <a asp-action="Index" asp-route-carSearch="@ViewBag.carSearch"  asp-route-sortingCars="@ViewData["CarYearASC"]" title="Old to Recent"><img src="~/Images/up.png" alt="U" /></a>
+                    <a asp-action="Index" asp-route-carSearch="@ViewBag.carSearch"  asp-route-sortingCars="@ViewData["CarYearDESC"]" title="Recent to Old"><img src="~/Images/down.png" alt="D" /></a>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Milleage)
+                    <a asp-action="Index" asp-route-carSearch="@ViewBag.carSearch"  asp-route-sortingCars="@ViewData["CarMilleageASC"]" title="Low to High"><img src="~/Images/up.png" alt="U" /></a>
+                    <a asp-action="Index" asp-route-carSearch="@ViewBag.carSearch"  asp-route-sortingCars="@ViewData["CarMilleageDESC"]" title="High to Low"><img src="~/Images/down.png" alt="D" /></a>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Color)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SellingPrice)
+                    <a asp-action="Index" asp-route-carSearch="@ViewBag.carSearch"  asp-route-sortingCars="@ViewData["CarPriceASC"]" title="Low to High"><img src="~/Images/up.png" alt="U" /></a>
+                    <a asp-action="Index" asp-route-carSearch="@ViewBag.carSearch"  asp-route-sortingCars="@ViewData["CarPriceDESC"]" title="High to Low"><img src="~/Images/down.png" alt="D" /></a>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.MakeName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ModelName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Trim)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Year)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Milleage)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Color)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SellingPrice)
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    </td>
-                </tr>
+                if (item.SaleDate == null)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MakeName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ModelName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Trim)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Year)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Milleage)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Color)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SellingPrice)
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        </td>
+                    </tr>
+                }
+
             }
-
-        }
-    </tbody>
-</table>
-
+        </tbody>
+    </table>
+</form>
 <button onclick="topFunction()" id="myBtn" title="Go to top" class="back-to-top-button">
     Top
 </button>
 
 
 <script>
+
+    //$(document).ready(function () {
+    //    $('.search-input').on("change", function () {
+    //        var OngoingSearch = document.getElementById("SearchCar").getAttribute("Value");
+    //        //carSearch = $(this).next('.search-input');
+    //        console.log(OngoingSearch);
+    //    }),
+    //});
+
     //Adding a 'Back-to-top' button
     //Get the button:
     mybutton = document.getElementById("myBtn");
